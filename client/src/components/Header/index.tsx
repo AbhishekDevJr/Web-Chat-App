@@ -3,7 +3,7 @@ import React from 'react'
 
 function HeaderComp() {
     return (
-        <header className='comp-header flex justify-between items-center px-[120px] py-[15px]'>
+        <header className='comp-header flex justify-between items-center px-[120px] py-[15px] w-full'>
             <div className='site-title text-[24px] text-[#6366F1] font-[600] tracking-tighter'>
                 <Link href='/'>Exclusive <span className='text-[#09090B]'>Messenger</span></Link>
             </div>
