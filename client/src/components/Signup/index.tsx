@@ -6,8 +6,8 @@ import './signup.scss';
 
 function SignUpComp() {
 
-    const onFinish = () => {
-
+    const onFinish = (val: any) => {
+        console.log('val------->', val);
     }
 
     const onFinishFailed = () => {
@@ -29,7 +29,7 @@ function SignUpComp() {
                 // form={form}
                 >
 
-                    <h1 className='text-[#ffffff] text-[40px]'>Create a new account</h1>
+                    <h1 className='text-[#ffffff] text-[40px] text-center mb-[50px]'>Create a new account</h1>
 
                     <div className='group-input-names'>
                         <Form.Item
@@ -120,9 +120,9 @@ function SignUpComp() {
                             }}
                             key='submit'
                         >
-                            <Button type="primary" htmlType="submit">
+                            <button className='text-[#F5F5F5] font-[600] px-[15px] py-[10px] rounded-[5px] bg-[#18181B] min-w-[220px]'>
                                 SIGN UP
-                            </Button>
+                            </button>
                         </Form.Item>
                     </div>
                 </Form>
