@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, Input } from 'antd';
+import { Form, Input } from 'antd';
 import React from 'react';
 import './signup.scss';
 
@@ -26,10 +26,11 @@ function SignUpComp() {
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    requiredMark={false}
                 // form={form}
                 >
 
-                    <h1 className='text-[#ffffff] text-[40px] text-center mb-[50px]'>Create a new account</h1>
+                    <h1 className='text-[#ffffff] text-[40px] text-center mb-[20px]'>Create a new account</h1>
 
                     <div className='group-input-names'>
                         <Form.Item
