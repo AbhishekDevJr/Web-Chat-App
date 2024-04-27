@@ -25,10 +25,11 @@ function SingInComp() {
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    requiredMark={false}
                 // form={form}
                 >
 
-                    <h1>Sign In</h1>
+                    <h1 className='text-[#ffffff] text-[40px] text-center mb-[20px]'>Sign In to your Account</h1>
 
                     <div className='group-signin-inputs'>
                         <Form.Item
@@ -67,8 +68,8 @@ function SingInComp() {
                                 span: 16,
                             }}
                         >
-                            <button type="submit">
-                                SIGNIN
+                            <button type="submit" className='text-[#F5F5F5] font-[600] px-[15px] py-[10px] rounded-[5px] bg-[#18181B] min-w-[220px]'>
+                                SIGN IN
                             </button>
                         </Form.Item>
                     </div>

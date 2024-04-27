@@ -5,14 +5,15 @@
   padding: 50px;
 
   h1 {
-    color: #ffffff;
-    font-family: "Open Sans", sans-serif;
-    font-size: 40px;
+    color: #343436;
+    font-family: "Inter", sans-serif;
+    font-size: 26px;
   }
 
   #basic_username {
     background-color: transparent;
-    min-width: 440px;
+    min-width: 590px;
+    padding: 8px;
   }
 
   #basic_password {
@@ -21,10 +22,17 @@
     border: none;
   }
 
+  .ant-input-affix-wrapper:focus-within {
+    border-color: #343436;
+  }
+
   .ant-input-password {
     background-color: transparent;
     border-radius: 10px;
-    border: 1px solid #383f47;
+    outline: 1px solid rgba(133, 133, 133, 0.534);
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
   }
 
   .group-signin-inputs {
@@ -48,41 +56,27 @@
     }
 
     input {
-      min-width: 400px;
+      min-width: 550px;
       background-color: transparent;
-      color: #a6adba;
+      color: #343436;
       font-family: "Open Sans", sans-serif;
-      outline: 1px solid #383f47;
+      outline: 1px solid rgba(133, 133, 133, 0.534);
       border: none;
-      padding: 10px;
     }
 
     label {
-      color: #a6adba;
+      color: #343436;
       font-family: "Open Sans", sans-serif;
     }
   }
 
   .group-btn {
-    // outline: 1px solid chartreuse;
     margin-top: 60px;
     display: flex;
     justify-content: center;
 
     .ant-form-item-control {
       margin: 0;
-    }
-
-    button {
-      background-color: #6419e6;
-      min-width: 250px;
-      min-height: 45px;
-      font-family: "Open Sans", sans-serif;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: #6419e6c0 !important;
     }
   }
 }

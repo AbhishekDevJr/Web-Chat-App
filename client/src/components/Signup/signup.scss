@@ -13,6 +13,8 @@
     background-color: transparent;
     border-radius: 10px;
     outline: 1px solid rgba(133, 133, 133, 0.534);
+    border: none;
+    border-radius: 6px;
   }
 
   .ant-input:hover {
@@ -29,23 +31,15 @@
     min-width: 590px;
   }
 
-  #basic_firstName:focus,
-  #basic_lastName:focus,
-  #basic_email:focus {
-    outline: 1px solid #343436;
-  }
-
-  #basic_firstName:hover,
-  #basic_lastName:hover,
-  #basic_email:hover {
-    outline: 1px solid #343436;
-  }
-
   .ant-input-affix-wrapper:focus-within {
     border-color: #343436;
   }
 
   .ant-input-affix-wrapper:hover {
+    border-color: #343436;
+  }
+
+  .ant-input-outlined:focus {
     border-color: #343436;
   }
 
@@ -177,8 +171,3 @@
     }
   }
 }
-
-// .ant-form-item-has-error {
-//   margin-bottom: 24px;
-//   display: none;
-// }
