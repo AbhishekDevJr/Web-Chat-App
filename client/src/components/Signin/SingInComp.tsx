@@ -7,7 +7,7 @@ import './signin.scss';
 function SingInComp() {
 
     const onFinish = (val: any) => {
-
+        console.log('SignIn------>', val);
     }
 
     const onFinishFailed = (val: any) => {
