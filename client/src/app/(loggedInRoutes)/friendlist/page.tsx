@@ -1,7 +1,9 @@
+import FriendListComp from "@/components/FriendList/FriendListComp";
+
 export default function FriendList() {
     return (
         <div className=''>
-            Friend List Route
+            <FriendListComp />
         </div>
     );
 }
