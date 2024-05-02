@@ -31,41 +31,49 @@ export const notificationSvg = <svg width="30px" height="30px" viewBox="0 0 24 2
     <path d="M9.42633 17.279C9.01212 17.279 8.67633 17.6148 8.67633 18.029C8.67633 18.4432 9.01212 18.779 9.42633 18.779V17.279ZM13.9757 18.779C14.3899 18.779 14.7257 18.4432 14.7257 18.029C14.7257 17.6148 14.3899 17.279 13.9757 17.279V18.779ZM12.676 5.25C13.0902 5.25 13.426 4.91421 13.426 4.5C13.426 4.08579 13.0902 3.75 12.676 3.75V5.25ZM10.726 3.75C10.3118 3.75 9.97601 4.08579 9.97601 4.5C9.97601 4.91421 10.3118 5.25 10.726 5.25V3.75ZM9.42633 18.779H13.9757V17.279H9.42633V18.779ZM12.676 3.75H10.726V5.25H12.676V3.75Z" fill="#000000" />
 </svg>
 
+export const addSvg = <svg width="30px" height="30px" viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg" strokeWidth="3" stroke="#6366F1" fill="none"><circle cx="29.22" cy="16.28" r="11.14" /><path d="M41.32,35.69c-2.69-1.95-8.34-3.25-12.1-3.25h0A22.55,22.55,0,0,0,6.67,55h29.9" /><circle cx="45.38" cy="46.92" r="11.94" /><line x1="45.98" y1="39.8" x2="45.98" y2="53.8" /><line x1="38.98" y1="46.8" x2="52.98" y2="46.8" /></svg>;
+
 export const fakeRequestData = [
     {
         firstName: 'Abhishek',
         lastName: 'Choudhari',
         email: 'abhishek@gmail.com',
-        username: 'abhishek@gmail.com'
+        username: 'abhishek@gmail.com',
+        userId: '1'
     },
     {
         firstName: 'Vishal',
         lastName: 'Chauhan',
         email: 'vishal@gmail.com',
-        username: 'vishal@gmail.com'
+        username: 'vishal@gmail.com',
+        userId: '2'
     },
     {
         firstName: 'Akash',
         lastName: 'Pillai',
         email: 'akash@gmail.com',
-        username: 'akash@gmail.com'
+        username: 'akash@gmail.com',
+        userId: '3'
     },
     {
         firstName: 'Joshua',
         lastName: 'Saji',
         email: 'Joshua@gmail.com',
-        username: 'Joshua@gmail.com'
+        username: 'Joshua@gmail.com',
+        userId: '4'
     },
     {
         firstName: 'Dipak',
         lastName: 'Rana',
         email: 'Dipak@gmail.com',
-        username: 'Dipak@gmail.com'
+        username: 'Dipak@gmail.com',
+        userId: '5'
     },
     {
         firstName: 'Priyal',
         lastName: 'Ghevariya',
         email: 'priyal@gmail.com',
-        username: 'priyal@gmail.com'
+        username: 'priyal@gmail.com',
+        userId: '6'
     },
 ];
