@@ -77,3 +77,34 @@ export const fakeRequestData = [
         userId: '6'
     },
 ];
+
+export const fakeChat = [
+    {
+        user: 'abhishek@gmail.com',
+        msg: 'Hey, I have something to tell you!'
+    },
+    {
+        user: 'unknown@gmail.com',
+        msg: 'What is it?'
+    },
+    {
+        user: 'abhishek@gmail.com',
+        msg: 'I got suspended!'
+    },
+    {
+        user: 'abhishek@gmail.com',
+        msg: 'you see the sir pointed a ruler at me and said there is an idiot at the end of this ruler'
+    },
+    {
+        user: 'unkown@gmail.com',
+        msg: 'and...'
+    },
+    {
+        user: 'abhishek@gmail.com',
+        msg: 'I asked which end...'
+    },
+    {
+        user: 'unknown@gmail.com',
+        msg: 'HAHAHAH! Oh no... lol!'
+    }
+];
