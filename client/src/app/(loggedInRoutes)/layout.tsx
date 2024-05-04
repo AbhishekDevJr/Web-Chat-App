@@ -70,8 +70,8 @@ export default function LoggedInLayout({
                 </div>
 
                 <div className='site-search flex items-center justify-center gap-[10px]'>
-                    <Input className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] focus:bg-[#F5F7F9]' type='text' placeholder="Search" />
-                    <span className="text-[#F5F5F5] font-[500] px-[20px] py-[8px] rounded-[10px] bg-[#6366F1] cursor-pointer">
+                    <Input className='border-[2px] py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px]' type='text' placeholder="Search Something..." />
+                    <span className="ml-[-50px] z-[10]">
                         {searchSvg}
                     </span>
                 </div>

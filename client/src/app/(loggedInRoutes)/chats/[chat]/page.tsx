@@ -1,6 +1,7 @@
 'use client';
 
-import { fakeChat, fakeRequestData } from "@/helpers/constants";
+import { fakeChat, fakeRequestData, sendSvg } from "@/helpers/constants";
+import { Input } from "antd";
 import { useEffect, useState } from "react";
 
 export default function ChatUser({ params }: { params: any }) {
@@ -35,19 +36,37 @@ export default function ChatUser({ params }: { params: any }) {
                         <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUser.firstName[0]}</span>
                     </div>
 
-                    <div className='body-chat flex-1 flex-grow'>
-                        <ul>
+                    <div className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center justify-around'>
+                        <ul className="min-w-[100%]">
                             {fakeChat.map((item, index) =>
-                                <li key={index}>
-                                    <span className="min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{item.user.includes('unknown') ? currUser.firstName[0] : item.user[0].toUpperCase()}</span>
-                                    <span>{item.user.includes('unknown') ? currUser.firstName : 'Abhishek'}</span>
-                                    <p>{item.msg}</p>
+                                <li key={index} className={`flex items-center gap-[5px] ${index % 2 === 0 ? 'justify-start' : 'justify-end'} ${index !== 0 ? 'mt-[-20px]' : ''}`}>
+                                    {index % 2 === 0 ?
+                                        <>
+                                            <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUser.firstName[0].toUpperCase()}</span>
+                                            <div className="text-[#09090B] font-[600]">
+                                                <span className="text-[#09090B] text-[14px]">{currUser.firstName}</span>
+                                                <p className="bg-[#e2e2e2] p-[15px] rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[400px]">{item.msg}</p>
+                                            </div>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="text-[white] font-[600] flex flex-col justify-end">
+                                                <span className="text-[#09090B] text-[14px] ml-[auto]">{'Abhishek'}</span>
+                                                <p className="bg-[#6366F1] p-[15px] rounded-br-[20px] rounded-bl-[20px] rounded-tl-[20px] max-w-[400px]">{item.msg}</p>
+                                            </div>
+
+                                            <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#153448] cursor-pointer">{`A`}</span>
+                                        </>
+                                    }
                                 </li>
                             )}
                         </ul>
 
-                        <div className="">
-
+                        <div className="flex items-center min-w-[50%]">
+                            <Input className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." />
+                            <span className="ml-[-40px] z-[10]">
+                                {sendSvg}
+                            </span>
                         </div>
                     </div>
                 </div>
