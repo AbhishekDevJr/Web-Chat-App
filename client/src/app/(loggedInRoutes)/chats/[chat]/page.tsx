@@ -36,7 +36,7 @@ export default function ChatUser({ params }: { params: any }) {
                         <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUser.firstName[0]}</span>
                     </div>
 
-                    <div className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center justify-around'>
+                    <div className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center justify-between'>
                         <ul className="min-w-[100%]">
                             {fakeChat.map((item, index) =>
                                 <li key={index} className={`flex items-center gap-[5px] ${index % 2 === 0 ? 'justify-start' : 'justify-end'} ${index !== 0 ? 'mt-[-20px]' : ''}`}>
