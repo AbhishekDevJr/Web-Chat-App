@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const indexRouter = require('./Routes/indexRouter');
+const userRouter = require('./Routes/userRouter');
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use(cors({
 }));
 
 app.use('/', indexRouter);
+
+app.use('/user', userRouter);
 
 //Starting Server Port
 app.listen('5000', () => console.log('Server Running on Port:5000'));
