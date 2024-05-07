@@ -8,6 +8,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function SignUpComp() {
 
+    const userSubmitAPI = async (req: any) => {
+
+    }
+
     const onFinish = (val: any) => {
         console.log('val------->', val, val.password === val.conPassword);
 
