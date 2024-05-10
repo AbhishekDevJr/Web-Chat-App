@@ -8,8 +8,32 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function SignUpComp() {
 
-    const userSubmitAPI = async (req: any) => {
+    const userSubmitAPI = async (reqBody: any) => {
+        try {
 
+            const userSubmit = await fetch('http://localhost:5000/user/signup', {
+                method: 'POST',
+                body: JSON.stringify(reqBody),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            });
+
+            const userSubmitParsed = await userSubmit.json();
+            console.log('SignUP Res---------------->', userSubmitParsed);
+
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
     }
 
     const onFinish = (val: any) => {
@@ -17,6 +41,7 @@ function SignUpComp() {
 
         if (val.password === val.conPassword) {
             //Handle Validation
+            userSubmitAPI(val);
         }
         else {
             toast.error('Password & Confirm Password should match', {
