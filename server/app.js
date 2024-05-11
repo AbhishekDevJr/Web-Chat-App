@@ -5,25 +5,26 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const indexRouter = require('./Routes/indexRouter');
 const userRouter = require('./Routes/userRouter');
+require('dotenv').config();
 
 const app = express();
 
 //Connecting to MongoDB Using Mongoose ODM
-// mongoose.connect('MongoDB Connection String', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     tls: true,
-//     tlsInsecure: true,
-// });
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    tls: true,
+    tlsInsecure: true,
+});
 
-// mongoose.connection.on('error', (err: any) => {
-//     console.log('MongoDB Connection Error---->', err);
-//     process.exit(1);
-// });
+mongoose.connection.on('error', (err) => {
+    console.log('MongoDB Connection Error---->', err);
+    process.exit(1);
+});
 
-// mongoose.connection.once('open', () => {
-//     console.log('MongoDB Connected Successfully!');
-// });
+mongoose.connection.once('open', () => {
+    console.log('MongoDB Connected Successfully!');
+});
 
 //MiddleWares for BodyRequest Parsing, CORS
 app.use(bodyParser.urlencoded({ extended: false }));

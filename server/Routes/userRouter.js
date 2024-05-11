@@ -4,8 +4,10 @@ const userController = require('../Controllers/userController');
 
 router.get('/', userController.index);
 
-router.get('/signup', userController.signup);
+router.get('/signup', userController.index);
 
 router.post('/signup', userController.signup);
+
+router.post('/signin', userController.signin);
 
 module.exports = router;

@@ -2,8 +2,13 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const UserModel = require('../Models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-exports.index = asyncHandler((req, res, next) => {
+exports.index = asyncHandler(async (req, res, next) => {
+
+    const allUsers = await UserModel.find();
+    console.log('All Users-------->', allUsers);
+
     res.json({
         route: '/user',
         title: 'User Route',
@@ -30,7 +35,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
                 res.json({
                     title: 'User Registered',
-                    msg: `${req?.body?.email} User Registered.`
+                    msg: `${req?.body?.email} User Registered. Redirecting to Login Page.`
                 });
             }
         }
@@ -52,7 +57,38 @@ exports.signup = asyncHandler(async (req, res, next) => {
 exports.signin = asyncHandler(async (req, res, next) => {
     try {
         if (req?.body?.username && req?.body?.password) {
+            const userExists = await UserModel.findOne({ email: req?.body?.username });
 
+            if (userExists) {
+                const isPasswordCorrect = await bcrypt.compare(req?.body?.password, userExists?.password);
+
+                if (isPasswordCorrect) {
+                    const token = jwt.sign({ username: userExists?.email }, `myTokenSecretKey`);
+
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        secure: true,
+                        maxAge: 3600000
+                    });
+
+                    res.json({
+                        title: 'Authentication Successful',
+                        msg: 'User Successfully Authenticated.'
+                    });
+                }
+                else {
+                    res.json({
+                        title: 'Authentication Failed',
+                        msg: 'Incorrect Password.'
+                    });
+                }
+            }
+            else {
+                res.json({
+                    title: 'User Not Exists',
+                    msg: `${req?.body?.username} Does Not Exists.`
+                });
+            }
         } else {
             res.status(400).json({
                 title: 'Bad Request',

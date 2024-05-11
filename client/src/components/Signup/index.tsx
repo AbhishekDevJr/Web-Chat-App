@@ -5,8 +5,11 @@ import React from 'react';
 import './signup.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 function SignUpComp() {
+    const router = useRouter();
+    const [form] = Form.useForm();
 
     const userSubmitAPI = async (reqBody: any) => {
         try {
@@ -21,6 +24,36 @@ function SignUpComp() {
 
             const userSubmitParsed = await userSubmit.json();
             console.log('SignUP Res---------------->', userSubmitParsed);
+
+            if (userSubmitParsed?.title === 'User Registered') {
+                toast.success(`${userSubmitParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                form.resetFields();
+                setTimeout(() => {
+                    router.push('/signin');
+                }, 3000);
+            }
+            else {
+                toast.success(`${userSubmitParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                })
+            }
+
 
         } catch (err: any) {
             toast.error(`${err?.message}`, {
@@ -74,7 +107,7 @@ function SignUpComp() {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                         requiredMark={false}
-                    // form={form}
+                        form={form}
                     >
 
                         <h1 className='text-[#ffffff] text-[40px] text-center mb-[20px]'>Create a new account</h1>

@@ -3,11 +3,69 @@
 import { Form, Input } from 'antd'
 import React from 'react'
 import './signin.scss';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 function SingInComp() {
+    const router = useRouter();
+    const [form] = Form.useForm();
+
+    const userAuthApi = async (reqBody: any) => {
+        try {
+            const userAuth = await fetch('http://localhost:5000/user/signin', {
+                method: 'POST',
+                body: JSON.stringify(reqBody),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            });
+
+            const userAuthParsed = await userAuth.json();
+
+            if (userAuthParsed?.title === 'Authentication Successful') {
+                toast.success(`${userAuthParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                form.resetFields();
+                setTimeout(() => router.push('/userdashboard'), 3000);
+            }
+            else {
+                toast.error(`${userAuthParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
 
     const onFinish = (val: any) => {
         console.log('SignIn------>', val);
+        userAuthApi(val);
     }
 
     const onFinishFailed = (val: any) => {
@@ -75,6 +133,19 @@ function SingInComp() {
                     </div>
                 </Form>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={true}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                // pauseOnHover
+                theme="dark"
+            // transition: Bounce
+            />
         </div>
     )
 }
