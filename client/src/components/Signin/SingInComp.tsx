@@ -18,7 +18,8 @@ function SingInComp() {
                 body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                }
+                },
+                credentials: 'include',
             });
 
             const userAuthParsed = await userAuth.json();

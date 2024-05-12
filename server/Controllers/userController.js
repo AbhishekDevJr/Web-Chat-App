@@ -63,25 +63,14 @@ exports.signin = asyncHandler(async (req, res, next) => {
                 const isPasswordCorrect = await bcrypt.compare(req?.body?.password, userExists?.password);
 
                 if (isPasswordCorrect) {
-                    const token = jwt.sign({ username: userExists?.email }, `myTokenSecretKey`);
+                    const token = jwt.sign({ username: userExists?.email }, `myTokenSecretKey`, { expiresIn: '1H' });
 
-                    // res.cookie('token', token, {
-                    //     maxAge: 3600000,
-                    //     sameSite: 'none'
-                    // });
-
-                    // //Prod Use Only
-                    // // httpOnly: true,
-                    // // secure: true,
-
-                    // res.json({
-                    //     title: 'Authentication Successful',
-                    //     msg: 'User Successfully Authenticated.'
-                    // });
 
                     res.status(200).cookie('token', token, {
-                        maxAge: 3600000,
-                        sameSite: 'none'
+                        // maxAge: 3600000,
+                        sameSite: 'lax',
+                        httpOnly: true,
+                        secure: false,
                     }).json({
                         title: 'Authentication Successful',
                         msg: 'User Successfully Authenticated.'
