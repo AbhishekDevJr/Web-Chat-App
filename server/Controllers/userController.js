@@ -65,13 +65,24 @@ exports.signin = asyncHandler(async (req, res, next) => {
                 if (isPasswordCorrect) {
                     const token = jwt.sign({ username: userExists?.email }, `myTokenSecretKey`);
 
-                    res.cookie('token', token, {
-                        httpOnly: true,
-                        secure: true,
-                        maxAge: 3600000
-                    });
+                    // res.cookie('token', token, {
+                    //     maxAge: 3600000,
+                    //     sameSite: 'none'
+                    // });
 
-                    res.json({
+                    // //Prod Use Only
+                    // // httpOnly: true,
+                    // // secure: true,
+
+                    // res.json({
+                    //     title: 'Authentication Successful',
+                    //     msg: 'User Successfully Authenticated.'
+                    // });
+
+                    res.status(200).cookie('token', token, {
+                        maxAge: 3600000,
+                        sameSite: 'none'
+                    }).json({
                         title: 'Authentication Successful',
                         msg: 'User Successfully Authenticated.'
                     });

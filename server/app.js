@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const indexRouter = require('./Routes/indexRouter');
 const userRouter = require('./Routes/userRouter');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -32,8 +33,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    credentials: true
 }));
+
+app.use(cookieParser());
 
 app.use('/', indexRouter);
 
