@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { addFriendSvg, addSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
 import { Input } from "antd";
 
@@ -9,9 +9,25 @@ export default function LoggedInLayout({
 }: {
     children: React.ReactNode
 }) {
-    const [chatSelection, setChatSelection] = useState('chat');
     const bgColors = ['bg-[#153448]', 'bg-[#0C0C0C]', 'bg-[#430A5D]', 'bg-[#5F5D9C]', 'bg-[#114232]', 'bg-[#35374B]'];
+    const [chatSelection, setChatSelection] = useState('chat');
 
+    const cookieCheckerApi = async () => {
+        const cookieCheck = await fetch('http://localhost:5000', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            credentials: 'include',
+        });
+
+        const cookieCheckParse = cookieCheck.json();
+        console.log('cookieCheckParse----->', cookieCheckParse);
+    }
+
+    useLayoutEffect(() => {
+        cookieCheckerApi();
+    }, []);
 
     return (
         <div className='container-user-layout flex flex-col min-h-[100vh] border-solid bg-[white]'>

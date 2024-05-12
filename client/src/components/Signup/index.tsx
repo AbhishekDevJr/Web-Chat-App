@@ -39,7 +39,7 @@ function SignUpComp() {
                 form.resetFields();
                 setTimeout(() => {
                     router.push('/signin');
-                }, 3000);
+                }, 2000);
             }
             else {
                 toast.success(`${userSubmitParsed?.msg}`, {
