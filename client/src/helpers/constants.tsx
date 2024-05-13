@@ -112,3 +112,6 @@ export const fakeChat = [
         msg: 'HAHAHAH! Oh no... lol!'
     }
 ];
+
+export const protectedRoutes = ['/userdashboard', '/chats'];
+export const authRoutes = ['/signin', '/signup']; 
