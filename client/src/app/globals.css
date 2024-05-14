@@ -6,3 +6,7 @@
 body {
     font-family: "Inter", sans-serif;
 }
+
+body .add-friend-modal, .ant-modal-title{
+    font-family: "Inter", sans-serif;
+}

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
 import { addFriendSvg, addSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
-import { Input } from "antd";
+import { Input, Modal, Popover } from "antd";
 
 export default function LoggedInLayout({
     children
@@ -11,6 +11,48 @@ export default function LoggedInLayout({
 }) {
     const bgColors = ['bg-[#153448]', 'bg-[#0C0C0C]', 'bg-[#430A5D]', 'bg-[#5F5D9C]', 'bg-[#114232]', 'bg-[#35374B]'];
     const [chatSelection, setChatSelection] = useState('chat');
+    const [addFriendModal, setIsAddFriend] = useState(false);
+    const [addFriendString, setAddFriendString] = useState('');
+    const tempCurrUser = {
+        firstName: 'Abhishek',
+        lastName: 'Choudhari',
+        email: 'abhishek@gmail.com',
+        username: 'abhishek@gmail.com',
+        userId: '1'
+    }
+
+    const profileContent = (
+        <div className="flex flex-col gap-[10px]">
+            <p className="text-[18px] font-[600]">{`${tempCurrUser.firstName} ${tempCurrUser.lastName}`}</p>
+            <p className="text-[16px] font-[600]">{`${tempCurrUser.email}`}</p>
+            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
+                SIGN OUT
+            </button>
+        </div>
+    );
+
+    const notificationContent = (
+        <div className="">
+            <ul className="flex flex-col gap-[10px]">
+                {fakeRequestData.map((item, index) =>
+                    <li key={index} className="flex items-center justify-between">
+                        <span>{`${item.firstName} ${item.firstName} sent you a friend request.`}</span>
+                        <div className="flex gap-[10px]">
+                            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
+                                ACCEPT
+                            </button>
+                            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[red]'>
+                                REJECT
+                            </button>
+                        </div>
+                    </li>)}
+            </ul>
+        </div>
+    );
+
+    const handleAddFriendSearch = () => {
+        console.log('Add Friend String--------->', addFriendString);
+    }
 
     const cookieCheckerApi = async () => {
         const cookieCheck = await fetch('http://localhost:5000', {
@@ -93,8 +135,13 @@ export default function LoggedInLayout({
                 </div>
 
                 <div className='site-user-info flex items-center justify-center gap-[10px]'>
-                    {notificationSvg}
-                    <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9]'>A</span>
+                    <Popover content={notificationContent} title="" trigger="hover" className="cursor-pointer">
+                        {notificationSvg}
+                    </Popover>
+
+                    <Popover content={profileContent} title="" trigger="click">
+                        <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>A</span>
+                    </Popover>
                 </div>
             </header>
 
@@ -112,7 +159,7 @@ export default function LoggedInLayout({
                         <ul className='flex justify-between gap-[5px]'>
                             {fakeRequestData.map((item, index) => <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{item.firstName[0]}</li>)}
 
-                            <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px]`}>{addSvg}</li>
+                            <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px]`}>{addSvg}</li>
                         </ul>
                     </div>
 
@@ -142,6 +189,18 @@ export default function LoggedInLayout({
                     {children}
                 </div>
             </div>
+            <Modal title="" open={addFriendModal} footer={null} onCancel={() => {
+                setIsAddFriend(false);
+                setAddFriendString('');
+            }} centered>
+                <div className='add-friend-modal flex flex-col gap-[10px]'>
+                    <p className='text-[22px]'>Search Friend using Username or Email.</p>
+                    <Input onChange={(e) => setAddFriendString(e.target.value)} value={addFriendString} onPressEnter={handleAddFriendSearch} className='border-[2px] py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px]' type='text' placeholder="Search Friend..." />
+                    <button onClick={handleAddFriendSearch} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B] mx-[auto]'>
+                        SEARCH
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 }
