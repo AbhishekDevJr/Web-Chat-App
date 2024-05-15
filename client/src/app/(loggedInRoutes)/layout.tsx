@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
-import { addFriendSvg, addSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
+import { acceptReq, addFriendSvg, addSvg, deleteSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
 import { Input, Modal, Popover } from "antd";
 
 export default function LoggedInLayout({
@@ -36,13 +36,13 @@ export default function LoggedInLayout({
             <ul className="flex flex-col gap-[10px]">
                 {fakeRequestData.map((item, index) =>
                     <li key={index} className="flex items-center justify-between">
-                        <span>{`${item.firstName} ${item.firstName} sent you a friend request.`}</span>
+                        <span className="text-[#18181B] text-[16px] font-[500]">{`${item.firstName} ${item.lastName} sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
-                            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
-                                ACCEPT
+                            <button type="submit" className='text-[#F5F5F5] font-[500] px-[10px] py-[5px] rounded-[5px] bg-[#18181B]'>
+                                {acceptReq}
                             </button>
-                            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[red]'>
-                                REJECT
+                            <button type="submit" className='text-[#F5F5F5] font-[500] px-[10px] py-[5px] rounded-[5px] bg-[red]'>
+                                {deleteSvg}
                             </button>
                         </div>
                     </li>)}
@@ -135,7 +135,7 @@ export default function LoggedInLayout({
                 </div>
 
                 <div className='site-user-info flex items-center justify-center gap-[10px]'>
-                    <Popover content={notificationContent} title="" trigger="hover" className="cursor-pointer">
+                    <Popover content={notificationContent} title="" trigger="click" className="cursor-pointer">
                         {notificationSvg}
                     </Popover>
 
