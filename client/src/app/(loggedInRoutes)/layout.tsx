@@ -52,6 +52,7 @@ export default function LoggedInLayout({
 
     const handleAddFriendSearch = () => {
         console.log('Add Friend String--------->', addFriendString);
+        //Handle Add Friend Logic Here
     }
 
     const cookieCheckerApi = async () => {
