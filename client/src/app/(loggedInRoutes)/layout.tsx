@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
 import { acceptReq, addFriendSvg, addSvg, deleteSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
 import { Input, Modal, Popover } from "antd";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
 
 export default function LoggedInLayout({
     children
@@ -20,12 +23,66 @@ export default function LoggedInLayout({
         username: 'abhishek@gmail.com',
         userId: '1'
     }
+    const router = useRouter();
+
+    const signOutApi = async () => {
+        try {
+            const logOut = await fetch('http://localhost:5000/user/signout', {
+                method: 'POST',
+                // body: JSON.stringify(reqBody),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                credentials: 'include',
+            });
+
+            const logOutParsed = await logOut.json();
+
+            if (logOutParsed?.title === 'Logged Out') {
+                toast.success(`${logOutParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 1000);
+            }
+            else {
+                toast.error(`${logOutParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
 
     const profileContent = (
         <div className="flex flex-col gap-[10px]">
             <p className="text-[18px] font-[600]">{`${tempCurrUser.firstName} ${tempCurrUser.lastName}`}</p>
             <p className="text-[16px] font-[600]">{`${tempCurrUser.email}`}</p>
-            <button type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
+            <button onClick={() => signOutApi()} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
                 SIGN OUT
             </button>
         </div>
@@ -202,6 +259,19 @@ export default function LoggedInLayout({
                     </button>
                 </div>
             </Modal>
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={true}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                // pauseOnHover
+                theme="dark"
+            // transition: Bounce
+            />
         </div>
     );
 }

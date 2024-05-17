@@ -103,3 +103,28 @@ exports.signin = asyncHandler(async (req, res, next) => {
         });
     }
 });
+
+exports.signout = asyncHandler(async (req, res, next) => {
+    try {
+        const jwtToken = req?.cookies.token;
+
+        if (jwtToken) {
+            res.clearCookie('token', { path: '/' });
+            res.status(200).json({
+                title: `Logged Out`,
+                msg: `Logged Out Successfully.`
+            });
+        } else {
+            res.status(400).json({
+                title: `Bad Request`,
+                msg: `Bad Request Payload.`
+            });
+        }
+
+    } catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});
