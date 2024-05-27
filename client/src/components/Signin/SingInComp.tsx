@@ -36,7 +36,7 @@ function SingInComp() {
                     theme: "dark",
                 });
                 form.resetFields();
-                setTimeout(() => router.push('/userdashboard'), 3000);
+                setTimeout(() => router.push('/userdashboard'), 2000);
             }
             else {
                 toast.error(`${userAuthParsed?.msg}`, {
