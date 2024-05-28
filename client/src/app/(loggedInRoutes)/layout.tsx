@@ -1,7 +1,7 @@
 'use client';
 import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
-import { acceptReq, addFriendSvg, addSvg, deleteSvg, fakeRequestData, friendListSvg, friendReqSvg, logOutSvg, notificationSvg, searchSvg, sendSvg } from "@/helpers/constants";
+import { addSvg, fakeRequestData, notificationSvg, searchSvg } from "@/helpers/constants";
 import { Input, Modal, Popover } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -91,20 +91,20 @@ export default function LoggedInLayout({
     const notificationContent = (
         <div className="">
             <div className="flex items-center justify-between p-[10px] border-b-[2px] border-[#E5E1DA] mb-[20px]">
-                <p className="text-[18px] text-[#09090B] cursor-pointer">Notifications</p>
+                <p className="text-[18px] text-[#09090B] cursor-pointer border-b-[2px] border-[#09090B]">Notifications</p>
                 <p className="text-[#808080] text-[18px] cursor-pointer">Mark all as read</p>
             </div>
             <ul className="flex flex-col gap-[10px]">
                 {fakeRequestData.map((item, index) =>
                     <li key={index} className="flex items-center justify-between gap-[10px]">
                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]}{item.lastName[0]}</span>
-                        <span className=""><span className="font-[600]">{item.firstName}</span>{` sent you a friend request.`}</span>
+                        <span className="text-[16px]"><span className="font-[600]">{item.firstName}</span>{` sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
-                            <button type="submit" className='text-[#F5F5F5] font-[500] px-[10px] py-[5px] rounded-[5px] bg-[#18181B]'>
-                                {acceptReq}
+                            <button type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
+                                Accept
                             </button>
-                            <button type="submit" className='text-[#F5F5F5] font-[500] px-[10px] py-[5px] rounded-[5px] bg-[red]'>
-                                {deleteSvg}
+                            <button type="submit" className='text-[#09090B] font-[500] text-[16px] px-[9px] py-[4px] rounded-[5px] outline outline-[2px] outline-[#6366F1]'>
+                                Decline
                             </button>
                         </div>
                     </li>)}
@@ -185,8 +185,8 @@ export default function LoggedInLayout({
                                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]}</span>
 
                                         <div className='flex flex-col justify-center mr-[auto] ml-[10px]'>
-                                            <p className='text-[12px] font-[600]'>{`${item.firstName} ${item.lastName}`}</p>
-                                            <p className='text-[12px] font-[500]'>{`Hey Vishu, I miss you...`}</p>
+                                            <p className='text-[14px] font-[600]'>{`${item.firstName} ${item.lastName}`}</p>
+                                            <p className='text-[14px] font-[500]'>{`Hey, I have something to tell...!`}</p>
                                         </div>
 
                                         <div className='flex flex-col'>
