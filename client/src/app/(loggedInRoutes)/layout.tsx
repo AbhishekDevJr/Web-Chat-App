@@ -24,6 +24,7 @@ export default function LoggedInLayout({
         userId: '1'
     }
     const router = useRouter();
+    const [addFriendResult, setAddFriendResult] = useState<any>(null);
 
     const signOutApi = async () => {
         try {
@@ -114,6 +115,7 @@ export default function LoggedInLayout({
 
     const handleAddFriendSearch = () => {
         console.log('Add Friend String--------->', addFriendString);
+        searchFriendApi(addFriendString);
         //Handle Add Friend Logic Here
     }
 
@@ -127,7 +129,61 @@ export default function LoggedInLayout({
         });
 
         const cookieCheckParse = cookieCheck.json();
-        console.log('cookieCheckParse----->', cookieCheckParse);
+    }
+
+    const searchFriendApi = async (username: String) => {
+        try {
+            const searchFrndRes = await fetch('http://localhost:5000/user/search', {
+                method: 'POST',
+                body: JSON.stringify({ username }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
+
+            const searchFrndResJson = await searchFrndRes.json();
+
+            if (searchFrndResJson.title === `User Found`) {
+                toast.success(`${searchFrndResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
+                setAddFriendResult(searchFrndResJson);
+            }
+            else {
+                toast.error(`${searchFrndResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setAddFriendResult(null);
+            }
+            console.log('searchFrndResJson-------------->', searchFrndResJson);
+        }
+        catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
     }
 
     useLayoutEffect(() => {
@@ -206,6 +262,7 @@ export default function LoggedInLayout({
             <Modal title="" open={addFriendModal} footer={null} onCancel={() => {
                 setIsAddFriend(false);
                 setAddFriendString('');
+                setAddFriendResult(null);
             }} centered>
                 <div className='add-friend-modal flex flex-col gap-[10px]'>
                     <p className='text-[22px]'>Search Friend using Username or Email.</p>
@@ -213,6 +270,22 @@ export default function LoggedInLayout({
                     <button onClick={handleAddFriendSearch} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B] mx-[auto]'>
                         SEARCH
                     </button>
+
+                    <div className=''>
+                        {addFriendResult ?
+                            <div className='flex justify-start gap-[15px] items-center'>
+                                <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
+                                <span className="text-[16px]"><span className="font-[500] text-[20px]">{addFriendResult.firstName} {addFriendResult.lastName}</span></span>
+                                <button type="submit" className='text-[#FEEFFF] ml-[auto] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
+                                    Add Friend
+                                </button>
+                            </div>
+                            :
+                            <p className='text-[18px] text-center'>
+                                No User Found
+                            </p>
+                        }
+                    </div>
                 </div>
             </Modal>
             <ToastContainer

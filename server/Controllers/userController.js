@@ -128,3 +128,41 @@ exports.signout = asyncHandler(async (req, res, next) => {
         });
     }
 });
+
+exports.search = asyncHandler(async (req, res, next) => {
+    try {
+        const searchStr = req?.body?.username;
+
+        if (searchStr) {
+            const userExists = await UserModel.findOne({ email: searchStr });
+
+            if (userExists) {
+                res.status(200).json({
+                    title: `User Found`,
+                    msg: `User Found`,
+                    username: userExists?.email,
+                    firstName: userExists?.firstName,
+                    lastName: userExists?.lastName
+                });
+            }
+            else {
+                res.status(200).json({
+                    title: `User Not Found`,
+                    msg: `User Not Found.`
+                });
+            }
+        }
+        else {
+            res.status(400).json({
+                title: `Bad Request`,
+                msg: `Bad Request Payload.`
+            });
+        }
+
+    } catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});

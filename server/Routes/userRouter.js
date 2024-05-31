@@ -12,4 +12,6 @@ router.post('/signin', userController.signin);
 
 router.post('/signout', userController.signout);
 
+router.post('/search', userController.search);
+
 module.exports = router;
