@@ -14,4 +14,8 @@ router.post('/signout', userController.signout);
 
 router.post('/search', userController.search);
 
+router.post('/requests', userController.requests);
+
+router.post('/notifications', userController.notifications);
+
 module.exports = router;

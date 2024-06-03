@@ -186,6 +186,63 @@ export default function LoggedInLayout({
         }
     }
 
+    const addFriendApi = async (username: String) => {
+        try {
+            const addFriendRes = await fetch('http://localhost:5000/user/requests', {
+                method: 'POST',
+                body: JSON.stringify({ username }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                credentials: 'include',
+            });
+
+            const addFriendResJson = await addFriendRes.json();
+
+            if (addFriendResJson?.title === 'Friend Request Sent' || addFriendResJson?.title === 'Request Already Exists') {
+                toast.success(`${addFriendResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+            else {
+                toast.error(`${addFriendResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        }
+        catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
+    const addFriendRequest = (request: String) => {
+        console.log('Add Request----------->', request);
+        addFriendApi(request);
+    }
+
     useLayoutEffect(() => {
         cookieCheckerApi();
     }, []);
@@ -276,7 +333,7 @@ export default function LoggedInLayout({
                             <div className='flex justify-start gap-[15px] items-center'>
                                 <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
                                 <span className="text-[16px]"><span className="font-[500] text-[20px]">{addFriendResult.firstName} {addFriendResult.lastName}</span></span>
-                                <button type="submit" className='text-[#FEEFFF] ml-[auto] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
+                                <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#FEEFFF] ml-[auto] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                     Add Friend
                                 </button>
                             </div>

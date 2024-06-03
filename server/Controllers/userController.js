@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const UserModel = require('../Models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const FriendReqModel = require('../Models/friendRequest');
 
 exports.index = asyncHandler(async (req, res, next) => {
 
@@ -158,6 +159,84 @@ exports.search = asyncHandler(async (req, res, next) => {
                 msg: `Bad Request Payload.`
             });
         }
+
+    } catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});
+
+exports.requests = asyncHandler(async (req, res, next) => {
+    try {
+        const username = req?.body?.username;
+
+        if (username) {
+            const userExists = await UserModel.findOne({ email: username });
+
+            if (userExists) {
+                const token = req?.cookies?.token;
+
+                try {
+                    const decoded = jwt.verify(token, 'myTokenSecretKey');
+                    const currUserName = decoded?.username;
+
+                    const sender = await UserModel.findOne({ email: currUserName });
+                    const senderId = sender._id;
+
+                    const receiver = await UserModel.findOne({ email: username });
+                    const receivedId = receiver._id;
+
+                    const requestExists = await FriendReqModel.findOne({ sender: senderId, receiver: receivedId });
+
+                    if (requestExists) {
+                        res.status(200).json({
+                            title: `Request Already Exists`,
+                            msg: 'You have already sent request to this User.'
+                        });
+                    }
+                    else {
+                        const newReq = new FriendReqModel({ sender: senderId, receiver: receivedId, status: 'pending', createdAt: new Date() });
+                        newReq.save();
+
+                        res.status(200).json({
+                            title: `Friend Request Sent`,
+                            msg: `Friend Request Sent Successfully.`
+                        });
+                    }
+
+                } catch (err) {
+                    res.status(500).json({
+                        title: `Unhandled Exception`,
+                        msg: `Unhandled Server Error.`
+                    });
+                }
+
+            } else {
+                res.status(200).json({
+                    title: `User Not Found`,
+                    msg: `User Not Found.`
+                });
+            }
+        }
+        else {
+            res.status(400).json({
+                title: `Bad Request`,
+                msg: `Bad Request Payload.`
+            });
+        }
+    }
+    catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});
+
+exports.notifications = asyncHandler(async (req, res, next) => {
+    try {
 
     } catch (err) {
         res.status(500).json({
