@@ -16,6 +16,6 @@ router.post('/search', userController.search);
 
 router.post('/requests', userController.requests);
 
-router.post('/notifications', userController.notifications);
+router.get('/notifications', userController.notifications);
 
 module.exports = router;

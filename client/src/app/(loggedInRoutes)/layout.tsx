@@ -238,9 +238,42 @@ export default function LoggedInLayout({
         }
     }
 
+    const getNotificationDataApi = async () => {
+        try {
+            const notificationData = await fetch('http://localhost:5000/user/notifications', {
+                method: 'GET',
+                // body: JSON.stringify({ username }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                credentials: 'include',
+            });
+
+            const notificationDataJson = notificationData.json();
+            console.log('notificationDataJson-------------->', notificationDataJson);
+
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
     const addFriendRequest = (request: String) => {
         console.log('Add Request----------->', request);
         addFriendApi(request);
+    }
+
+    const getNotificationData = () => {
+        console.log('Get Notificaton------------------->');
+        getNotificationDataApi();
     }
 
     useLayoutEffect(() => {
@@ -263,7 +296,9 @@ export default function LoggedInLayout({
 
                 <div className='site-user-info flex items-center justify-center gap-[10px]'>
                     <Popover content={notificationContent} title="" trigger="click" className="cursor-pointer">
-                        {notificationSvg}
+                        <span onClick={() => getNotificationData()}>
+                            {notificationSvg}
+                        </span>
                     </Popover>
 
                     <Popover content={profileContent} title="" trigger="click">

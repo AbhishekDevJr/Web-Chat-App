@@ -8,7 +8,6 @@ const FriendReqModel = require('../Models/friendRequest');
 exports.index = asyncHandler(async (req, res, next) => {
 
     const allUsers = await UserModel.find();
-    console.log('All Users-------->', allUsers);
 
     res.json({
         route: '/user',
@@ -237,6 +236,39 @@ exports.requests = asyncHandler(async (req, res, next) => {
 
 exports.notifications = asyncHandler(async (req, res, next) => {
     try {
+        const token = req?.cookies?.token;
+        const decoded = jwt.verify(token, 'myTokenSecretKey');
+        const currUserName = decoded?.username;
+
+        const userId = await UserModel.findOne({ email: currUserName });
+
+        if (String(userId._id)) {
+            const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(userId._id) });
+
+            const userRequestIds = userFriendRequestsCursor.map((item) => String(item.sender));
+            const userRequests = await UserModel.find({ _id: { $in: userRequestIds } });
+            const userRequestsRes = userRequests.map((item) => ({ firstName: item.firstName, lastName: item.lastName, email: item.email, createdAt: item.createdAt }));
+
+            if (userRequests.length) {
+                res.status(200).json({
+                    title: `Request User Data`,
+                    msg: `Friend Request User Data for Current User.`,
+                    data: userRequestsRes
+                });
+            }
+            else {
+                res.status(200).json({
+                    title: `No Friend Requests Found`,
+                    msg: `No Friend Requests found for current user.`
+                });
+            }
+        }
+        else {
+            res.status(500).json({
+                title: `Unhandled Exception`,
+                msg: `Unhandled Server Error.`
+            });
+        }
 
     } catch (err) {
         res.status(500).json({
