@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.4",
     "antd": "^5.16.4",
     "bcryptjs": "^2.4.3",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "next": "14.2.1",
     "react": "^18",

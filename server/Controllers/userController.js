@@ -63,8 +63,16 @@ exports.signin = asyncHandler(async (req, res, next) => {
                 const isPasswordCorrect = await bcrypt.compare(req?.body?.password, userExists?.password);
 
                 if (isPasswordCorrect) {
-                    const token = jwt.sign({ username: userExists?.email }, `myTokenSecretKey`, { expiresIn: '1H' });
+                    const token = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, `myTokenSecretKey`, { expiresIn: '1H' });
 
+                    const userinfo = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, `myTokenSecretKey`, { expiresIn: '1H' });
+
+
+                    res.cookie('userinfo', userinfo, {
+                        sameSite: 'lax',
+                        httpOnly: false,
+                        secure: false,
+                    });
 
                     res.status(200).cookie('token', token, {
                         // maxAge: 3600000,
@@ -107,9 +115,11 @@ exports.signin = asyncHandler(async (req, res, next) => {
 exports.signout = asyncHandler(async (req, res, next) => {
     try {
         const jwtToken = req?.cookies.token;
+        const userinfocookie = req?.cookies.userinfo;
 
         if (jwtToken) {
             res.clearCookie('token', { path: '/' });
+            res.clearCookie('userinfo', { path: '/' });
             res.status(200).json({
                 title: `Logged Out`,
                 msg: `Logged Out Successfully.`
@@ -271,6 +281,17 @@ exports.notifications = asyncHandler(async (req, res, next) => {
             });
         }
 
+    } catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});
+
+exports.accept = asyncHandler(async (req, res, next) => {
+    try {
+        const username = req?.body?.username;
     } catch (err) {
         res.status(500).json({
             title: `Unhandled Exception`,

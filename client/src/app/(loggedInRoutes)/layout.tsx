@@ -7,6 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import { capitalize, isEmpty } from 'lodash';
+import { jwtDecode } from 'jwt-decode'; // For JWT parsing
+import Cookies from 'js-cookie';
 
 export default function LoggedInLayout({
     children
@@ -17,16 +19,10 @@ export default function LoggedInLayout({
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const tempCurrUser = {
-        firstName: 'Abhishek',
-        lastName: 'Choudhari',
-        email: 'abhishek@gmail.com',
-        username: 'abhishek@gmail.com',
-        userId: '1'
-    }
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [friendRequestData, setFriendRequestData] = useState<any>([]);
+    const [currUserData, setCurrUserData] = useState<any>({});
 
     const signOutApi = async () => {
         try {
@@ -82,9 +78,9 @@ export default function LoggedInLayout({
     }
 
     const profileContent = (
-        <div className="flex flex-col gap-[10px]">
-            <p className="text-[18px] font-[600]">{`${tempCurrUser.firstName} ${tempCurrUser.lastName}`}</p>
-            <p className="text-[16px] font-[600]">{`${tempCurrUser.email}`}</p>
+        <div className="flex flex-col gap-[10px] min-w-[200px]">
+            <p className="text-[18px] font-[600]">{`${capitalize(currUserData.firstName)} ${capitalize(currUserData.lastName)}`}</p>
+            <p className="text-[16px] font-[600]">{`${currUserData.username}`}</p>
             <button onClick={() => signOutApi()} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
                 SIGN OUT
             </button>
@@ -101,7 +97,7 @@ export default function LoggedInLayout({
                 {!isEmpty(friendRequestData) ? friendRequestData.map((item: any, index: any) =>
                     <li key={index} className="flex items-center justify-between gap-[10px]">
                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
-                        <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)}</span>{` sent you a friend request.`}</span>
+                        <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)} {capitalize(item.lastName)}</span>{` sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
                             <button type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                 Accept
@@ -287,6 +283,21 @@ export default function LoggedInLayout({
         }
     }
 
+    const getCurrentUserInfo = () => {
+        const userinfo = Cookies.get('userinfo');
+        console.log('Token Front------->', userinfo);
+
+        if (userinfo) {
+            try {
+                const decoded = jwtDecode(userinfo);
+                setCurrUserData(decoded);
+                console.log('Token Info------------->', decoded);
+            } catch (err) {
+                console.error('Error Decoding JWT Token------->', err);
+            }
+        }
+    }
+
     const addFriendRequest = (request: String) => {
         console.log('Add Request----------->', request);
         addFriendApi(request);
@@ -299,6 +310,7 @@ export default function LoggedInLayout({
 
     useLayoutEffect(() => {
         cookieCheckerApi();
+        getCurrentUserInfo();
     }, []);
 
     return (
@@ -323,7 +335,7 @@ export default function LoggedInLayout({
                     </Popover>
 
                     <Popover content={profileContent} title="" trigger="click">
-                        <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>A</span>
+                        <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{currUserData?.firstName && capitalize(currUserData?.firstName[0])}</span>
                     </Popover>
                 </div>
             </header>
