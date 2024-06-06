@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 //Connecting to MongoDB Using Mongoose ODM
-mongoose.connect('mongodb+srv://abhishek007coc:MirXHuz64DLzI8kb@cluster0.lpnqwnl.mongodb.net/ExclusiveMessenger', {
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     tls: true,
