@@ -6,6 +6,7 @@ import { Input, Modal, Popover } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
+import { capitalize, isEmpty } from 'lodash';
 
 export default function LoggedInLayout({
     children
@@ -25,6 +26,7 @@ export default function LoggedInLayout({
     }
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
+    const [friendRequestData, setFriendRequestData] = useState<any>([]);
 
     const signOutApi = async () => {
         try {
@@ -90,16 +92,16 @@ export default function LoggedInLayout({
     );
 
     const notificationContent = (
-        <div className="">
+        <div className="min-w-[400px]">
             <div className="flex items-center justify-between p-[10px] border-b-[2px] border-[#E5E1DA] mb-[20px]">
                 <p className="text-[18px] text-[#09090B] cursor-pointer border-b-[2px] border-[#09090B]">Notifications</p>
                 <p className="text-[#808080] text-[18px] cursor-pointer">Mark all as read</p>
             </div>
             <ul className="flex flex-col gap-[10px]">
-                {fakeRequestData.map((item, index) =>
+                {!isEmpty(friendRequestData) ? friendRequestData.map((item: any, index: any) =>
                     <li key={index} className="flex items-center justify-between gap-[10px]">
-                        <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]}{item.lastName[0]}</span>
-                        <span className="text-[16px]"><span className="font-[600]">{item.firstName}</span>{` sent you a friend request.`}</span>
+                        <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
+                        <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)}</span>{` sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
                             <button type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                 Accept
@@ -108,7 +110,11 @@ export default function LoggedInLayout({
                                 Decline
                             </button>
                         </div>
-                    </li>)}
+                    </li>)
+                    :
+                    <p className="text-[#09090B] font-[500] text-[16px] text-center">No New Notifications</p>
+                }
+
             </ul>
         </div>
     );
@@ -249,7 +255,22 @@ export default function LoggedInLayout({
                 credentials: 'include',
             });
 
-            const notificationDataJson = notificationData.json();
+            const notificationDataJson = await notificationData.json();
+            if (['Request User Data', 'No Friend Requests Found'].includes(notificationDataJson?.title)) {
+                setFriendRequestData(notificationDataJson?.data);
+            }
+            else {
+                toast.error(`${notificationDataJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
             console.log('notificationDataJson-------------->', notificationDataJson);
 
         } catch (err: any) {

@@ -259,7 +259,8 @@ exports.notifications = asyncHandler(async (req, res, next) => {
             else {
                 res.status(200).json({
                     title: `No Friend Requests Found`,
-                    msg: `No Friend Requests found for current user.`
+                    msg: `No Friend Requests found for current user.`,
+                    data: []
                 });
             }
         }
