@@ -99,7 +99,7 @@ export default function LoggedInLayout({
                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
                         <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)} {capitalize(item.lastName)}</span>{` sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
-                            <button type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
+                            <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                 Accept
                             </button>
                             <button type="submit" className='text-[#09090B] font-[500] text-[16px] px-[9px] py-[4px] rounded-[5px] outline outline-[2px] outline-[#6366F1]'>
@@ -114,6 +114,64 @@ export default function LoggedInLayout({
             </ul>
         </div>
     );
+
+    const acceptFriendReqApi = async (username: String) => {
+        try {
+            const friendReqAcceptRes = await fetch('http://localhost:5000/user/requests/accept', {
+                method: 'POST',
+                body: JSON.stringify({ sender: username }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                credentials: 'include',
+            });
+
+            const friendReqAcceptResJson = await friendReqAcceptRes.json();
+
+            if (friendReqAcceptResJson?.title === 'Friend Request Accepted') {
+                toast.success(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
+            }
+            else {
+                toast.error(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
+    const handleAcceptFriendReq = (item: any) => {
+        console.log('Accept User--------->', item);
+        acceptFriendReqApi(item?.email);
+    }
 
     const handleAddFriendSearch = () => {
         console.log('Add Friend String--------->', addFriendString);
