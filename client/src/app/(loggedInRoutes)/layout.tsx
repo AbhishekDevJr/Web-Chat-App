@@ -102,7 +102,7 @@ export default function LoggedInLayout({
                             <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                 Accept
                             </button>
-                            <button type="submit" className='text-[#09090B] font-[500] text-[16px] px-[9px] py-[4px] rounded-[5px] outline outline-[2px] outline-[#6366F1]'>
+                            <button onClick={() => handleRejectFriendReq(item)} type="submit" className='text-[#09090B] font-[500] text-[16px] px-[9px] py-[4px] rounded-[5px] outline outline-[2px] outline-[#6366F1]'>
                                 Decline
                             </button>
                         </div>
@@ -168,9 +168,67 @@ export default function LoggedInLayout({
         }
     }
 
+    const rejectFriendReqApi = async (username: String) => {
+        try {
+            const friendReqAcceptRes = await fetch('http://localhost:5000/user/requests/reject', {
+                method: 'POST',
+                body: JSON.stringify({ sender: username }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                credentials: 'include',
+            });
+
+            const friendReqAcceptResJson = await friendReqAcceptRes.json();
+
+            if (friendReqAcceptResJson?.title === 'Friend Request Rejected') {
+                toast.success(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
+            }
+            else {
+                toast.error(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+
+        } catch (err: any) {
+            toast.error(`${err?.message}`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
     const handleAcceptFriendReq = (item: any) => {
         console.log('Accept User--------->', item);
         acceptFriendReqApi(item?.email);
+    }
+
+    const handleRejectFriendReq = (item: any) => {
+        console.log('Accept User--------->', item);
+        rejectFriendReqApi(item?.email);
     }
 
     const handleAddFriendSearch = () => {
@@ -458,7 +516,7 @@ export default function LoggedInLayout({
                         {addFriendResult ?
                             <div className='flex justify-start gap-[15px] items-center'>
                                 <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
-                                <span className="text-[16px]"><span className="font-[500] text-[20px]">{addFriendResult.firstName} {addFriendResult.lastName}</span></span>
+                                <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstName)} {capitalize(addFriendResult.lastName)}</span></span>
                                 <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#FEEFFF] ml-[auto] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
                                     Add Friend
                                 </button>

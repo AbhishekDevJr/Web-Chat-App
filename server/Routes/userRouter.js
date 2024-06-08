@@ -20,4 +20,6 @@ router.get('/notifications', userController.notifications);
 
 router.post('/requests/accept', userController.accept);
 
+router.post('/requests/reject', userController.reject);
+
 module.exports = router;

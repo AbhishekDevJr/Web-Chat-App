@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.6",
+    "@types/jwt-decode": "^3.1.0",
     "@types/lodash": "^4.17.4",
     "antd": "^5.16.4",
     "bcryptjs": "^2.4.3",

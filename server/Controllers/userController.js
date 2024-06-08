@@ -342,3 +342,56 @@ exports.accept = asyncHandler(async (req, res, next) => {
         });
     }
 });
+
+exports.reject = asyncHandler(async (req, res, next) => {
+    try {
+        const token = req?.cookies?.token;
+        const decoded = jwt.verify(token, 'myTokenSecretKey');
+        const currUserName = decoded?.username;
+
+        const friendReqSender = req?.body?.sender;
+        console.log('Request Accept------------------->', currUserName,);
+
+        if (friendReqSender && currUserName) {
+            const currUserId = await UserModel.findOne({ email: currUserName }, { projection: { _id: 1 } });
+            const friendReqSenderId = await UserModel.findOne({ email: friendReqSender }, { projection: { _id: 1 } });
+
+            console.log('User Ids------------->', String(currUserId?._id), String(friendReqSenderId?._id));
+
+            const friendReqObj = await FriendReqModel.updateOne({ sender: String(friendReqSenderId?._id), receiver: String(currUserId?._id) }, { $set: { status: 'rejected' } });
+
+            console.log('friendReqObj---------->', friendReqObj);
+
+            if (friendReqObj?.modifiedCount && friendReqObj?.matchedCount) {
+                // const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
+                const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
+                const userRequestIds = userFriendRequestsCursor.map((item) => String(item.sender));
+                const userRequests = await UserModel.find({ _id: { $in: userRequestIds } });
+                const userRequestsRes = userRequests.map((item) => ({ firstName: item.firstName, lastName: item.lastName, email: item.email, createdAt: item.createdAt }));
+                res.status(200).json({
+                    title: `Friend Request Rejected`,
+                    msg: `Friend Request Rejected`,
+                    pendingRequestData: userRequestsRes
+                });
+            } else {
+                res.status(200).json({
+                    title: `Error Rejecting Request`,
+                    msg: `Error in Rejecting Friend Request`
+                });
+            }
+
+        }
+        else {
+            res.status(400).json({
+                title: `Bad Request`,
+                msg: `Bad Request Payload.`
+            });
+        }
+
+    } catch (err) {
+        res.status(500).json({
+            title: `Unhandled Exception`,
+            msg: `Unhandled Server Error.`
+        });
+    }
+});
