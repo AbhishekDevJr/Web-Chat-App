@@ -99,10 +99,10 @@ export default function LoggedInLayout({
                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
                         <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)} {capitalize(item.lastName)}</span>{` sent you a friend request.`}</span>
                         <div className="flex gap-[10px]">
-                            <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#FEEFFF] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
+                            <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
                                 Accept
                             </button>
-                            <button onClick={() => handleRejectFriendReq(item)} type="submit" className='text-[#09090B] font-[500] text-[16px] px-[9px] py-[4px] rounded-[5px] outline outline-[2px] outline-[#6366F1]'>
+                            <button onClick={() => handleRejectFriendReq(item)} type="submit" className='text-[#E72929] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#E72929] hover:bg-[#E72929] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
                                 Decline
                             </button>
                         </div>
@@ -470,7 +470,7 @@ export default function LoggedInLayout({
                         <ul className='flex justify-between gap-[5px]'>
                             {fakeRequestData.map((item, index) => <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{item.firstName[0]}</li>)}
 
-                            <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px]`}>{addSvg}</li>
+                            <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px] hover:outline-[3px]`}>{addSvg}</li>
                         </ul>
                     </div>
 
@@ -508,17 +508,17 @@ export default function LoggedInLayout({
                 <div className='add-friend-modal flex flex-col gap-[10px]'>
                     <p className='text-[22px]'>Search Friend using Username or Email.</p>
                     <Input onChange={(e) => setAddFriendString(e.target.value)} value={addFriendString} onPressEnter={handleAddFriendSearch} className='border-[2px] py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px]' type='text' placeholder="Search Friend..." />
-                    <button onClick={handleAddFriendSearch} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B] mx-[auto]'>
+                    <button onClick={handleAddFriendSearch} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[25px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] mx-[auto] tracking-[1px] duration-300 hover:duration-300'>
                         SEARCH
                     </button>
 
                     <div className=''>
                         {addFriendResult ?
-                            <div className='flex justify-start gap-[15px] items-center'>
+                            <div className='flex justify-start gap-[15px] items-center mt-[20px]'>
                                 <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
                                 <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstName)} {capitalize(addFriendResult.lastName)}</span></span>
-                                <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#FEEFFF] ml-[auto] font-[500] text-[16px] px-[10px] py-[5px] rounded-[5px] bg-[#6366F1]'>
-                                    Add Friend
+                                <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[20px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] ml-[auto] duration-300 hover:duration-300'>
+                                    ADD FRIEND
                                 </button>
                             </div>
                             :
