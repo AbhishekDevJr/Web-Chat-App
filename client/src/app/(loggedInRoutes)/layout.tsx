@@ -222,19 +222,15 @@ export default function LoggedInLayout({
     }
 
     const handleAcceptFriendReq = (item: any) => {
-        console.log('Accept User--------->', item);
         acceptFriendReqApi(item?.email);
     }
 
     const handleRejectFriendReq = (item: any) => {
-        console.log('Accept User--------->', item);
         rejectFriendReqApi(item?.email);
     }
 
     const handleAddFriendSearch = () => {
-        console.log('Add Friend String--------->', addFriendString);
         searchFriendApi(addFriendString);
-        //Handle Add Friend Logic Here
     }
 
     const cookieCheckerApi = async () => {
@@ -288,7 +284,6 @@ export default function LoggedInLayout({
                 });
                 setAddFriendResult(null);
             }
-            console.log('searchFrndResJson-------------->', searchFrndResJson);
         }
         catch (err: any) {
             toast.error(`${err?.message}`, {
@@ -383,7 +378,6 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
             }
-            console.log('notificationDataJson-------------->', notificationDataJson);
 
         } catch (err: any) {
             toast.error(`${err?.message}`, {
@@ -401,13 +395,11 @@ export default function LoggedInLayout({
 
     const getCurrentUserInfo = () => {
         const userinfo = Cookies.get('userinfo');
-        console.log('Token Front------->', userinfo);
 
         if (userinfo) {
             try {
                 const decoded = jwtDecode(userinfo);
                 setCurrUserData(decoded);
-                console.log('Token Info------------->', decoded);
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
             }
@@ -415,12 +407,10 @@ export default function LoggedInLayout({
     }
 
     const addFriendRequest = (request: String) => {
-        console.log('Add Request----------->', request);
         addFriendApi(request);
     }
 
     const getNotificationData = () => {
-        console.log('Get Notificaton------------------->');
         getNotificationDataApi();
     }
 
