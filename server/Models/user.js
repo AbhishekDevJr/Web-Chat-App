@@ -6,7 +6,8 @@ const UserSchema = new Schema({
     lastName: { type: String, require: true, maxLength: 150 },
     email: { type: String, require: true, maxLength: 150 },
     password: { type: String, require: true, maxLength: 150 },
-    createdAt: { type: Date, require: true, default: new Date() }
+    createdAt: { type: Date, require: true, default: new Date() },
+    friendList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 module.exports = mongoose.model('User', UserSchema);

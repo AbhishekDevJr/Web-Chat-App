@@ -296,20 +296,20 @@ exports.accept = asyncHandler(async (req, res, next) => {
         const currUserName = decoded?.username;
 
         const friendReqSender = req?.body?.sender;
-        console.log('Request Accept------------------->', currUserName,);
 
         if (friendReqSender && currUserName) {
-            const currUserId = await UserModel.findOne({ email: currUserName }, { projection: { _id: 1 } });
+            const currUserId = await UserModel.findOne({ email: currUserName });
             const friendReqSenderId = await UserModel.findOne({ email: friendReqSender }, { projection: { _id: 1 } });
-
-            console.log('User Ids------------->', String(currUserId?._id), String(friendReqSenderId?._id));
 
             const friendReqObj = await FriendReqModel.updateOne({ sender: String(friendReqSenderId?._id), receiver: String(currUserId?._id) }, { $set: { status: 'accepted' } });
 
-            console.log('friendReqObj---------->', friendReqObj);
-
             if (friendReqObj?.modifiedCount && friendReqObj?.matchedCount) {
-                // const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
+
+                if (!currUserId?.friendList.includes(friendReqSenderId?._id)) {
+                    currUserId?.friendList.push(friendReqSenderId?._id);
+                    currUserId.save();
+                }
+
                 const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
                 const userRequestIds = userFriendRequestsCursor.map((item) => String(item.sender));
                 const userRequests = await UserModel.find({ _id: { $in: userRequestIds } });
@@ -350,20 +350,14 @@ exports.reject = asyncHandler(async (req, res, next) => {
         const currUserName = decoded?.username;
 
         const friendReqSender = req?.body?.sender;
-        console.log('Request Accept------------------->', currUserName,);
 
         if (friendReqSender && currUserName) {
             const currUserId = await UserModel.findOne({ email: currUserName }, { projection: { _id: 1 } });
             const friendReqSenderId = await UserModel.findOne({ email: friendReqSender }, { projection: { _id: 1 } });
 
-            console.log('User Ids------------->', String(currUserId?._id), String(friendReqSenderId?._id));
-
             const friendReqObj = await FriendReqModel.updateOne({ sender: String(friendReqSenderId?._id), receiver: String(currUserId?._id) }, { $set: { status: 'rejected' } });
 
-            console.log('friendReqObj---------->', friendReqObj);
-
             if (friendReqObj?.modifiedCount && friendReqObj?.matchedCount) {
-                // const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
                 const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
                 const userRequestIds = userFriendRequestsCursor.map((item) => String(item.sender));
                 const userRequests = await UserModel.find({ _id: { $in: userRequestIds } });
