@@ -23,7 +23,6 @@ function SignUpComp() {
             });
 
             const userSubmitParsed = await userSubmit.json();
-            console.log('SignUP Res---------------->', userSubmitParsed);
 
             if (userSubmitParsed?.title === 'User Registered') {
                 toast.success(`${userSubmitParsed?.msg}`, {
@@ -70,7 +69,6 @@ function SignUpComp() {
     }
 
     const onFinish = (val: any) => {
-        console.log('val------->', val, val.password === val.conPassword);
 
         if (val.password === val.conPassword) {
             //Handle Validation

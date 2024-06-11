@@ -65,7 +65,6 @@ function SingInComp() {
     }
 
     const onFinish = (val: any) => {
-        console.log('SignIn------>', val);
         userAuthApi(val);
     }
 

@@ -3,10 +3,25 @@
 import { fakeChat, fakeRequestData, sendSvg } from "@/helpers/constants";
 import { Input } from "antd";
 import { useEffect, useState } from "react";
+import io from 'socket.io-client';
 
 export default function ChatUser({ params }: { params: any }) {
-    console.log('params------->', params.chat);
     const [currUser, setCurrUser] = useState<any>({});
+
+    const socket = io('http://localhost:5000', { autoConnect: false });
+    const [userMessage, setUserMessage] = useState('');
+
+
+    const generateRoomId = (userId1: any, userId2: any) => {
+        // Example: combine user IDs in alphabetical order to avoid duplicates
+        const [id1, id2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
+        return `${id1}-${id2}`;
+    };
+
+    // const handleSendMessage = () => {
+    //     socket.emit('sendMessage', { userMessage, roomId });
+    //     setUserMessage('');
+    // };
 
     const getCurrUser = () => {
         const user = fakeRequestData.find((item) => item.userId === params.chat);
@@ -21,6 +36,8 @@ export default function ChatUser({ params }: { params: any }) {
     useEffect(() => {
         getCurrUser();
     }, []);
+
+    console.log(`Message User---------->`, userMessage);
 
     return (
         <>
@@ -63,8 +80,8 @@ export default function ChatUser({ params }: { params: any }) {
                         </ul>
 
                         <div className="flex items-center min-w-[50%]">
-                            <Input className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." />
-                            <span className="ml-[-40px] z-[10]">
+                            <Input className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => setUserMessage(e.target.value)} onPressEnter={undefined} />
+                            <span className="ml-[-40px] z-[10] cursor-pointer">
                                 {sendSvg}
                             </span>
                         </div>

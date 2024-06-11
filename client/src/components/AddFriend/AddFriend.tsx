@@ -21,7 +21,6 @@ export default function AddFriendComp() {
             setLoading(true);
             setTimeout(() => {
                 const userList = fakeRequestData.filter((item) => item.username.toLowerCase().includes(searchString.toLowerCase()));
-                console.log('UserList------->', userList);
                 setUserFound(userList);
                 setLoading(false);
             }, 3000);
