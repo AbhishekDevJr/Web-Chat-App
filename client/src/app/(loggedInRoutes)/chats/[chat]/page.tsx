@@ -4,24 +4,29 @@ import { fakeChat, fakeRequestData, sendSvg } from "@/helpers/constants";
 import { Input } from "antd";
 import { useEffect, useState } from "react";
 import io from 'socket.io-client';
+import { jwtDecode } from 'jwt-decode'; // For JWT parsing
+import Cookies from 'js-cookie';
 
 export default function ChatUser({ params }: { params: any }) {
     const [currUser, setCurrUser] = useState<any>({});
 
-    const socket = io('http://localhost:5000', { autoConnect: false });
+    const socket = io('http://localhost:5000', { autoConnect: true });
     const [userMessage, setUserMessage] = useState('');
+    const [messages, setMessages] = useState<any>([]);
+    const [currUserData, setCurrUserData] = useState<any>({});
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
         // Example: combine user IDs in alphabetical order to avoid duplicates
         const [id1, id2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
-        return `${id1}-${id2}`;
+        return `${id1}_${id2}`;
     };
 
-    // const handleSendMessage = () => {
-    //     socket.emit('sendMessage', { userMessage, roomId });
-    //     setUserMessage('');
-    // };
+    const handleSendMessage = () => {
+        console.log('Send msg-------------------->');
+        socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: `663e6dca105bb5869bb7afeb_663f9302c46e01c24e77c70b` });
+        setUserMessage('');
+    };
 
     const getCurrUser = () => {
         const user = fakeRequestData.find((item) => item.userId === params.chat);
@@ -33,11 +38,51 @@ export default function ChatUser({ params }: { params: any }) {
         }
     }
 
+    const getCurrentUserInfo = () => {
+        const userinfo = Cookies.get('userinfo');
+
+        if (userinfo) {
+            try {
+                const decoded = jwtDecode(userinfo);
+                setCurrUserData(decoded);
+            } catch (err) {
+                console.error('Error Decoding JWT Token------->', err);
+            }
+        }
+    }
+
+    const sendUserMessage = () => {
+        handleSendMessage()
+    }
+
     useEffect(() => {
+        // console.log('Connect Effect 2----------------->');
         getCurrUser();
+        getCurrentUserInfo();
     }, []);
 
-    console.log(`Message User---------->`, userMessage);
+    useEffect(() => {
+        // console.log('Connect Effect----------------->', socket);
+
+        socket.emit('joinRoom', `663e6dca105bb5869bb7afeb_663f9302c46e01c24e77c70b`);
+
+        socket.on('connection', () => {
+            console.log('Connected to Socket.IO server!');
+        });
+
+        socket.on('receiveMessage', (messageData: any) => {
+            console.log('Messages Received---------------------------->', messageData);
+            messages.push(messageData); // Add received message to the state
+            setMessages([...messages]); // Update the state with the new message
+        });
+
+        // return () => {
+        //     socket.disconnect();
+        //     socket.off('receiveMessage');
+        // };
+    }, []);
+
+    // console.log(`Message User---------->`, params, messages);
 
     return (
         <>
@@ -80,8 +125,8 @@ export default function ChatUser({ params }: { params: any }) {
                         </ul>
 
                         <div className="flex items-center min-w-[50%]">
-                            <Input className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => setUserMessage(e.target.value)} onPressEnter={undefined} />
-                            <span className="ml-[-40px] z-[10] cursor-pointer">
+                            <Input value={userMessage} className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => setUserMessage(e.target.value)} onPressEnter={sendUserMessage} />
+                            <span onClick={() => sendUserMessage()} className="ml-[-40px] z-[10] cursor-pointer">
                                 {sendSvg}
                             </span>
                         </div>

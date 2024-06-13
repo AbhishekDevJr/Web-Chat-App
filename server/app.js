@@ -7,44 +7,46 @@ const indexRouter = require('./Routes/indexRouter');
 const userRouter = require('./Routes/userRouter');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const { Server } = require('socket.io');
 
 const app = express();
 
 const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
+const io = new Server(http, {
     cors: {
-        origin: `http://localhost:3000`,
-    }
+        origin: 'http://localhost:3000', // Replace with your React app's URL
+        methods: ['GET', 'POST'],
+    },
 });
+
+console.log('Server Running------------->');
 
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
+    const generateRoomId = (userId1, userId2) => {
+        // Example: combine user IDs in alphabetical order to avoid duplicates
+        const [id1, id2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
+        return `${id1}_${id2}`;
+    };
+
     // Handle user joining a chat room
     socket.on('joinRoom', (roomId) => {
         // Check if the room already exists
-        if (!io.sockets.adapter.rooms.has(roomId)) {
-            console.log('Creating room:', roomId);
-            socket.join(roomId); // User joins the newly created room
-        } else {
-            socket.join(roomId); // User joins an existing room
-        }
+        socket.join(roomId); // User joins the room
+        console.log('User', socket.id, 'joined room', roomId);
     });
 
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
         console.log('Received message:', messageData);
-
-        // Broadcast the message to all users in the room
-        io.to(messageData.roomId).emit('receiveMessage', messageData);
+        const roomId = generateRoomId(`663f9302c46e01c24e77c70b`, `663e6dca105bb5869bb7afeb`); // Use generateRoomId here
+        io.to(roomId).emit('receiveMessage', messageData);
     });
 
     // Handle user disconnection
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
-
-        // Broadcast a notification that a user has left
-        io.emit('userLeft', { userId: socket.id });
     });
 });
 
@@ -95,6 +97,7 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 //Starting Server Port
-app.listen('5000', () => console.log('Server Running on Port:5000'));
+// app.listen('5000', () => console.log('Server Running on Port:5000'));
+http.listen('5000', () => console.log('Server Running on Port:5000'));
 
 module.exports = app;

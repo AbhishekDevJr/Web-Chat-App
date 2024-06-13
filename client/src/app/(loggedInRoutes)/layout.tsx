@@ -437,6 +437,13 @@ export default function LoggedInLayout({
         socket.emit('joinRoom', roomId);
     };
 
+    const handleUserChatRedirect = (e: any) => {
+        e.preventDefault();
+        const roomId = generateRoomId(`663f9302c46e01c24e77c70b`, `663e6dca105bb5869bb7afeb`);
+        socket.emit('joinRoom', roomId);
+        router.push(`/chats/${roomId}`);
+    }
+
     console.log('RoomId------------>', roomId, typeof roomId);
 
     return (
@@ -487,8 +494,8 @@ export default function LoggedInLayout({
                     <div className="friend-list py-[30px]">
                         <ul className="flex flex-col gap-[10px]">
                             {fakeRequestData.map((item, index) =>
-                                <Link href={`/chats/${String(roomId)}`} key={index}>
-                                    <li onClick={() => handleStartPrivateChat()} key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] pb-[10px]">
+                                <div onClick={(e) => handleUserChatRedirect(e)} key={index}>
+                                    <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] pb-[10px]">
                                         <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]}</span>
 
                                         <div className='flex flex-col justify-center mr-[auto] ml-[10px]'>
@@ -501,7 +508,7 @@ export default function LoggedInLayout({
                                             <span className="text-[12px] font-[500] flex items-center justify-center max-w-[20px] min-h-[20px] rounded-[200px] bg-[#6366F1] text-[#F5F7F9] text-center">1</span>
                                         </div>
                                     </li>
-                                </Link>)}
+                                </div>)}
                         </ul>
                     </div>
                 </div>
