@@ -65,8 +65,9 @@ exports.signin = asyncHandler(async (req, res, next) => {
                 if (isPasswordCorrect) {
                     const token = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, `myTokenSecretKey`, { expiresIn: '1H' });
 
-                    const userinfo = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, `myTokenSecretKey`, { expiresIn: '1H' });
+                    const userinfo = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName, _id: userExists?._id }, `myTokenSecretKey`, { expiresIn: '1H' });
 
+                    const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
                     res.cookie('userinfo', userinfo, {
                         sameSite: 'lax',
@@ -81,7 +82,8 @@ exports.signin = asyncHandler(async (req, res, next) => {
                         secure: false,
                     }).json({
                         title: 'Authentication Successful',
-                        msg: 'User Successfully Authenticated.'
+                        msg: 'User Successfully Authenticated.',
+                        friendList: friendList
                     });
                 }
                 else {
@@ -299,25 +301,29 @@ exports.accept = asyncHandler(async (req, res, next) => {
 
         if (friendReqSender && currUserName) {
             const currUserId = await UserModel.findOne({ email: currUserName });
-            const friendReqSenderId = await UserModel.findOne({ email: friendReqSender }, { projection: { _id: 1 } });
+            const friendReqSenderId = await UserModel.findOne({ email: friendReqSender });
 
             const friendReqObj = await FriendReqModel.updateOne({ sender: String(friendReqSenderId?._id), receiver: String(currUserId?._id) }, { $set: { status: 'accepted' } });
 
             if (friendReqObj?.modifiedCount && friendReqObj?.matchedCount) {
 
-                if (!currUserId?.friendList.includes(friendReqSenderId?._id)) {
+                if (!currUserId?.friendList.includes(friendReqSenderId?._id) && !friendReqSenderId?.friendList.includes(currUserId?._id)) {
                     currUserId?.friendList.push(friendReqSenderId?._id);
+                    friendReqSenderId?.friendList.push(currUserId?._id);
                     currUserId.save();
+                    friendReqSenderId.save();
                 }
 
                 const userFriendRequestsCursor = await FriendReqModel.find({ receiver: String(currUserId?._id), status: 'pending' });
                 const userRequestIds = userFriendRequestsCursor.map((item) => String(item.sender));
                 const userRequests = await UserModel.find({ _id: { $in: userRequestIds } });
                 const userRequestsRes = userRequests.map((item) => ({ firstName: item.firstName, lastName: item.lastName, email: item.email, createdAt: item.createdAt }));
+                const friendList = await UserModel.find({ _id: { $in: currUserId?.friendList } }).select('firstName lastName email');
                 res.status(200).json({
                     title: `Friend Request Accepted`,
                     msg: `Friend Request Accepted`,
-                    pendingRequestData: userRequestsRes
+                    pendingRequestData: userRequestsRes,
+                    friendList: friendList
                 });
             } else {
                 res.status(200).json({

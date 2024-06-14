@@ -36,6 +36,7 @@ function SingInComp() {
                     theme: "dark",
                 });
                 form.resetFields();
+                localStorage.setItem('friendList', JSON.stringify(userAuthParsed?.friendList));
                 setTimeout(() => router.push('/userdashboard'), 2000);
             }
             else {

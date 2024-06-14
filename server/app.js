@@ -40,8 +40,8 @@ io.on('connection', (socket) => {
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
         console.log('Received message:', messageData);
-        const roomId = generateRoomId(`663f9302c46e01c24e77c70b`, `663e6dca105bb5869bb7afeb`); // Use generateRoomId here
-        io.to(roomId).emit('receiveMessage', messageData);
+        const roomId = generateRoomId(messageData?.roomId); // Use generateRoomId here
+        io.to(messageData?.roomId).emit('receiveMessage', messageData);
     });
 
     // Handle user disconnection

@@ -27,10 +27,10 @@ export default function LoggedInLayout({
     const socket = io('http://localhost:5000', { autoConnect: false });
     const [userMessage, setUserMessage] = useState('');
     const [roomId, setRoomId] = useState('');
+    const [userFriendList, setUserFriendList] = useState(JSON.parse(localStorage.getItem('friendList') || "[]"));
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
-        // Example: combine user IDs in alphabetical order to avoid duplicates
         const [id1, id2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
         return `${id1}_${id2}`;
     };
@@ -60,6 +60,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 1000);
             }
             else {
@@ -152,6 +153,8 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
+                setUserFriendList(friendReqAcceptResJson?.friendList);
+                localStorage.setItem('friendList', JSON.stringify(friendReqAcceptResJson?.friendList));
             }
             else {
                 toast.error(`${friendReqAcceptResJson?.msg}`, {
@@ -437,14 +440,18 @@ export default function LoggedInLayout({
         socket.emit('joinRoom', roomId);
     };
 
-    const handleUserChatRedirect = (e: any) => {
+    const handleUserChatRedirect = (e: any, index: number) => {
         e.preventDefault();
-        const roomId = generateRoomId(`663f9302c46e01c24e77c70b`, `663e6dca105bb5869bb7afeb`);
-        socket.emit('joinRoom', roomId);
-        router.push(`/chats/${roomId}`);
+        const senderUserId = currUserData?._id;
+        const recieverUserId = userFriendList[index]?._id;
+        if (senderUserId && recieverUserId) {
+            const roomId = generateRoomId(senderUserId, recieverUserId);
+            socket.emit('joinRoom', roomId);
+            router.push(`/chats/${roomId}`);
+        }
     }
 
-    console.log('RoomId------------>', roomId, typeof roomId);
+    console.log('RoomId------------>', userFriendList, currUserData);
 
     return (
         <div className='container-user-layout flex flex-col min-h-[100vh] border-solid bg-[white]'>
@@ -484,8 +491,8 @@ export default function LoggedInLayout({
                     </div>
 
                     <div className="friend-add">
-                        <ul className='flex justify-between gap-[5px]'>
-                            {fakeRequestData.map((item, index) => <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{item.firstName[0]}</li>)}
+                        <ul className='flex justify-start gap-[5px]'>
+                            {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) => <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{capitalize(item.firstName[0])}</li>)}
 
                             <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px] hover:outline-[3px]`}>{addSvg}</li>
                         </ul>
@@ -493,14 +500,14 @@ export default function LoggedInLayout({
 
                     <div className="friend-list py-[30px]">
                         <ul className="flex flex-col gap-[10px]">
-                            {fakeRequestData.map((item, index) =>
-                                <div onClick={(e) => handleUserChatRedirect(e)} key={index}>
+                            {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
+                                <div onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
                                     <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] pb-[10px]">
-                                        <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]}</span>
+                                        <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.firstName[0])}</span>
 
                                         <div className='flex flex-col justify-center mr-[auto] ml-[10px]'>
-                                            <p className='text-[14px] font-[600]'>{`${item.firstName} ${item.lastName}`}</p>
-                                            <p className='text-[14px] font-[500]'>{`Hey, I have something to tell...!`}</p>
+                                            <p className='text-[14px] font-[600]'>{`${capitalize(item.firstName)} ${capitalize(item.lastName)}`}</p>
+                                            <p className='text-[14px] font-[500]'>{`Hey, I have something to tell...`}</p>
                                         </div>
 
                                         <div className='flex flex-col'>
