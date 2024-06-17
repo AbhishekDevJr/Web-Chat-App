@@ -2,7 +2,7 @@
 
 import { Input, Modal } from 'antd';
 import { capitalize, isEmpty } from 'lodash';
-import React, { useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import io from 'socket.io-client';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const socket = io('http://localhost:5000', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
+    const [selectedUser, setSelectedUser] = useState<any>({});
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
@@ -22,15 +23,34 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         return `${id1}_${id2}`;
     };
 
+    const checkSelectedUser = () => {
+        const [id1, id2] = window.location.pathname.includes('_') ?
+            (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_')
+            :
+            [];
+        console.log('IDS------------->', (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_'));
+
+        console.log('User Con------------>', currUserData?._id, id2, userFriendList.find((item: any) => item?._id.includes(id2)));
+
+        if (currUserData?._id === id1) {
+            return userFriendList.find((item: any) => item?._id.includes(id2));
+        }
+        else {
+            return userFriendList.find((item: any) => item?._id.includes(id1));
+        }
+    }
+
     const handleUserChatRedirect = (e: any, index: number) => {
         e.preventDefault();
         const senderUserId = currUserData?._id;
         const recieverUserId = userFriendList[index]?._id;
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
+            setSelectedUser(userFriendList.find(((item: any) => item?._id.includes(recieverUserId))));
             socket.emit('joinRoom', roomId);
             router.push(`/chats/${roomId}`);
         }
+        // setSelectedUser(checkSelectedUser());
     }
 
     const searchFriendApi = async (username: String) => {
@@ -147,10 +167,15 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         addFriendApi(request);
     }
 
+    useLayoutEffect(() => {
+        setSelectedUser(checkSelectedUser());
+    }, []);
+
+    console.log('Selected User-------------->', selectedUser);
+
     return (
 
         <>
-
             <div className='container-sidebar basis-[15%] outline outline-[#E5E1DA] outline-[1px] p-[10px]'>
 
                 <div className='chat-type-toggle flex items-center gap-[5px] justify-center mb-[10px]'>
@@ -171,13 +196,13 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 <div className="friend-list py-[30px]">
                     <ul className="flex flex-col gap-[10px]">
                         {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
-                            <div onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
-                                <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] pb-[10px]">
+                            <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : ''} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
+                                <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px]">
                                     <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.firstName[0])}</span>
 
-                                    <div className='flex flex-col justify-center mr-[auto] ml-[10px]'>
+                                    <div className='flex flex-col gap-[5px] justify-center mr-[auto] ml-[10px]'>
                                         <p className='text-[14px] font-[600]'>{`${capitalize(item.firstName)} ${capitalize(item.lastName)}`}</p>
-                                        <p className='text-[14px] font-[500]'>{`Hey, I have something to tell...`}</p>
+                                        <p className='text-[14px] font-[500]'>{`Tap here to Chat!`}</p>
                                     </div>
 
                                     <div className='flex flex-col'>
