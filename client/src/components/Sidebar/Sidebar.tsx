@@ -61,6 +61,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
+                credentials: 'include',
             });
 
             const searchFrndResJson = await searchFrndRes.json();
@@ -78,6 +79,19 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 });
 
                 setAddFriendResult(searchFrndResJson);
+            }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(searchFrndResJson?.title)) {
+                toast.error(`${searchFrndResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
             }
             else {
                 toast.error(`${searchFrndResJson?.msg}`, {
@@ -131,6 +145,19 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+            }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(addFriendResJson?.title)) {
+                toast.error(`${addFriendResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
             }
             else {
                 toast.error(`${addFriendResJson?.msg}`, {
@@ -194,10 +221,10 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 </div>
 
                 <div className="friend-list py-[30px]">
-                    <ul className="flex flex-col gap-[10px]">
+                    <ul className="flex flex-col">
                         {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
-                            <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : ''} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
-                                <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px]">
+                            <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
+                                <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px] pb-[10px] pt-[10px]">
                                     <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.firstName[0])}</span>
 
                                     <div className='flex flex-col gap-[5px] justify-center mr-[auto] ml-[10px]'>
@@ -205,7 +232,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                                         <p className='text-[14px] font-[500]'>{`Tap here to Chat!`}</p>
                                     </div>
 
-                                    <div className='flex flex-col'>
+                                    <div className='flex flex-col gap-[5px]'>
                                         <span className="text-[12px] font-[500]">2:34 PM</span>
                                         <span className="text-[12px] font-[500] flex items-center justify-center max-w-[20px] min-h-[20px] rounded-[200px] bg-[#6366F1] text-[#F5F7F9] text-center">1</span>
                                     </div>

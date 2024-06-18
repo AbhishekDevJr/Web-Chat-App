@@ -1,11 +1,9 @@
 'use client';
-import Link from "next/link";
-import { useLayoutEffect, useState, useEffect } from "react";
-import { addSvg, fakeRequestData, notificationSvg, searchSvg } from "@/helpers/constants";
-import { Input, Modal, Popover } from "antd";
+import { useLayoutEffect, useState } from "react";
+import { addSvg, notificationSvg, searchSvg } from "@/helpers/constants";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { capitalize, isEmpty } from 'lodash';
+import { capitalize } from 'lodash';
 import { jwtDecode } from 'jwt-decode'; // For JWT parsing
 import Cookies from 'js-cookie';
 
@@ -24,9 +22,6 @@ export default function LoggedInLayout({
     const router = useRouter();
     const [friendRequestData, setFriendRequestData] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});
-
-    const [userMessage, setUserMessage] = useState('');
-    const [roomId, setRoomId] = useState('');
     const [userFriendList, setUserFriendList] = useState(JSON.parse(localStorage.getItem('friendList') || "[]"));
 
     const profileContent = (
@@ -65,7 +60,21 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                console.log('Logout Ac----------->');
                 setTimeout(() => router.push('/signin'), 1000);
+            }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(logOutParsed?.title)) {
+                toast.error(`${logOutParsed?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
             }
             else {
                 toast.error(`${logOutParsed?.msg}`, {
@@ -122,6 +131,19 @@ export default function LoggedInLayout({
                 setUserFriendList(friendReqAcceptResJson?.friendList);
                 localStorage.setItem('friendList', JSON.stringify(friendReqAcceptResJson?.friendList));
             }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(friendReqAcceptResJson?.title)) {
+                toast.error(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
+            }
             else {
                 toast.error(`${friendReqAcceptResJson?.msg}`, {
                     position: "top-center",
@@ -174,6 +196,19 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
+            }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(friendReqAcceptResJson?.title)) {
+                toast.error(`${friendReqAcceptResJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
             }
             else {
                 toast.error(`${friendReqAcceptResJson?.msg}`, {
@@ -236,6 +271,19 @@ export default function LoggedInLayout({
             const notificationDataJson = await notificationData.json();
             if (['Request User Data', 'No Friend Requests Found'].includes(notificationDataJson?.title)) {
                 setFriendRequestData(notificationDataJson?.data);
+            }
+            else if (['Unathorized Access', 'Invalid JWT Token'].includes(notificationDataJson?.title)) {
+                toast.error(`${notificationDataJson?.msg}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setTimeout(() => router.push('/signin'), 2000);
             }
             else {
                 toast.error(`${notificationDataJson?.msg}`, {

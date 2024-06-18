@@ -1,7 +1,20 @@
+'use client';
+
 import Link from 'next/link'
-import React from 'react'
+import React, { useLayoutEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 function HomeComp() {
+    const router = useRouter();
+
+    useLayoutEffect(() => {
+        const userinfo = Cookies.get('userinfo');
+        if (userinfo) {
+            router.push('/userdashboard');
+        }
+    }, []);
+
     return (
         <div className='container-home-comp flex flex-col items-center justify-center flex-grow w-full gap-[20px]'>
             <h1 className='text-[44px] font-[700] text-center mt-[-70px] leading-[45px] text-[#111827]'>Chat With Friends, Chat With Ai<br /> Whats The Difference?!</h1>
