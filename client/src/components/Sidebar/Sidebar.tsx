@@ -6,6 +6,8 @@ import React, { useLayoutEffect, useState } from 'react'
 import io from 'socket.io-client';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import Lottie from 'react-lottie';
+import leftArrow from '../../Lottie/leftArrow.json';
 
 
 function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFriendList: any, bgColors: any, addSvg: any, currUserData: any }) {
@@ -200,12 +202,21 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         setSelectedUser(checkSelectedUser());
     }, []);
 
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: leftArrow,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    };
+
     console.log('Selected User-------------->', selectedUser);
 
     return (
 
         <>
-            <div className='container-sidebar basis-[15%] outline outline-[#E5E1DA] outline-[1px] p-[10px]'>
+            <div className='container-sidebar outline outline-[#E5E1DA] outline-[1px] p-[10px] min-w-[300px]'>
 
                 <div className='chat-type-toggle flex items-center gap-[5px] justify-center mb-[10px]'>
                     <div className='custom-toggle px-[2px] py-[4px] bg-[#f0f0f1] rounded-[5px] flex items-center gap-[5px]'>
@@ -216,9 +227,17 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
                 <div className="friend-add">
                     <ul className='flex justify-start gap-[5px]'>
-                        {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) => <li className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{capitalize(item.firstName[0])}</li>)}
+                        {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) => <li className={`min-w-[40px] max-h-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{capitalize(item.firstName[0])}</li>)}
 
-                        <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px] hover:outline-[3px]`}>{addSvg}</li>
+                        <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] max-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px] hover:outline-[3px]`}>{addSvg}</li>
+                        {[0, 1].includes(userFriendList.length) && <li className='flex justify-center items-center'>
+                            <Lottie
+                                options={defaultOptions}
+                                height={40}
+                                width={80}
+                            />
+                            <span className='text-[#4B5563] text-[16px]'>Add Friend Here</span>
+                        </li>}
                     </ul>
                 </div>
 
