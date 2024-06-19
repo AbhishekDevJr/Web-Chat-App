@@ -16,6 +16,9 @@ export default function ChatUser({ params }: { params: any }) {
     const [messages, setMessages] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});
     const chatBoxRef = useRef<any>(null);
+    const [isTyping, setIsTyping] = useState<Boolean>(false);
+    const [typingMessage, setTypingMessage] = useState('');
+    const [senderUserObj, setSenderUserObj] = useState<any>({});
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
@@ -35,6 +38,31 @@ export default function ChatUser({ params }: { params: any }) {
         socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
         setUserMessage('');
     };
+
+    const handleTyping = () => {
+        if (!isTyping) {
+            setIsTyping(true);
+            socket.emit('typing', { roomId: params?.chat, currUserData });
+        }
+
+        clearTimeout(typingTimeout);
+
+        typingTimeout = setTimeout(() => {
+            setIsTyping(false);
+            if (!isTyping) {
+                socket.emit('stopTyping', { roomId: params?.chat, currUserData });
+            }
+        }, 2000);
+
+        // clearTimeout(typingTimeout);
+    }
+
+    let typingTimeout: any;
+
+    const handleMsgInputChange = (val: any) => {
+        setUserMessage(val);
+        handleTyping();
+    }
 
     const getCurrentUserInfo = () => {
         const userinfo = Cookies.get('userinfo');
@@ -64,6 +92,18 @@ export default function ChatUser({ params }: { params: any }) {
 
         socket.on('connection', () => {
             console.log('Connected to Socket.IO server!');
+        });
+
+        socket.on('typing', (data) => {
+            console.log('Typing Data---------->', data, data?.currUserData, currUserData);
+            setSenderUserObj(data?.currUserData);
+            setTypingMessage(`${data?.currUserData?.firstName} is typing...`);
+        });
+
+        socket.on('stopTyping', (data) => {
+            console.log('Typing Stop Data---------->', data);
+            setSenderUserObj(data?.currUserData);
+            setTypingMessage('');
         });
 
         socket.on('receiveMessage', (messageData: any) => {
@@ -100,6 +140,7 @@ export default function ChatUser({ params }: { params: any }) {
                     </div>
 
                     <div ref={chatBoxRef} className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center max-h-[85vh] justify-between overflow-y-auto relative'>
+
                         {messages.length ?
                             <ul className="min-w-[100%]">
                                 {!isEmpty(messages) && messages.map((item: any, index: any) =>
@@ -134,8 +175,10 @@ export default function ChatUser({ params }: { params: any }) {
                             </>
                         }
 
+                        {typingMessage && senderUserObj?._id !== currUserData?._id && <p className="absolute bottom-[100px]">{`${typingMessage}`}</p>}
+
                         <div className="flex items-center min-w-[50%] fixed bottom-[20px]">
-                            <Input value={userMessage} className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => setUserMessage(e.target.value)} onPressEnter={sendUserMessage} />
+                            <Input value={userMessage} className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => handleMsgInputChange(e.target.value)} onPressEnter={sendUserMessage} />
                             <span onClick={() => sendUserMessage()} className="ml-[-40px] z-[10] cursor-pointer">
                                 {sendSvg}
                             </span>

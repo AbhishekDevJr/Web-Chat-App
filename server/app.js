@@ -37,6 +37,16 @@ io.on('connection', (socket) => {
         console.log('User', socket.id, 'joined room', roomId);
     });
 
+    socket.on('typing', ({ roomId, currUserData }) => {
+        console.log('Server Typing--------->', roomId, currUserData);
+        socket.to(roomId).emit('typing', { currUserData });
+    });
+
+    socket.on('stopTyping', ({ roomId, currUserData }) => {
+        console.log('Server Typing Stop--------->', currUserData);
+        socket.to(roomId).emit('stopTyping', { currUserData });
+    });
+
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
         console.log('Received message:', messageData);
@@ -87,7 +97,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
     origin: 'http://localhost:3000',
-    credentials: true
+    credentials: true,
 }));
 
 app.use(cookieParser());

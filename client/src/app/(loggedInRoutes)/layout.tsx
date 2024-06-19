@@ -60,7 +60,6 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
-                console.log('Logout Ac----------->');
                 setTimeout(() => router.push('/signin'), 1000);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(logOutParsed?.title)) {
@@ -74,6 +73,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -142,6 +142,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -208,6 +209,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -283,6 +285,8 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                console.log('Noti Invalid---------->',);
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {

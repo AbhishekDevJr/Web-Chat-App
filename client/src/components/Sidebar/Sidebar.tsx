@@ -91,6 +91,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -157,6 +158,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+                localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
