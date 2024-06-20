@@ -34,7 +34,6 @@ export default function ChatUser({ params }: { params: any }) {
     };
 
     const handleSendMessage = () => {
-        console.log('Send msg-------------------->');
         socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
         setUserMessage('');
     };
@@ -86,7 +85,6 @@ export default function ChatUser({ params }: { params: any }) {
     }, []);
 
     useEffect(() => {
-        // console.log('Connect Effect----------------->', socket);
 
         socket.emit('joinRoom', params?.chat);
 
@@ -95,22 +93,18 @@ export default function ChatUser({ params }: { params: any }) {
         });
 
         socket.on('typing', (data) => {
-            console.log('Typing Data---------->', data, data?.currUserData, currUserData);
             setSenderUserObj(data?.currUserData);
             setTypingMessage(`${data?.currUserData?.firstName} is typing...`);
         });
 
         socket.on('stopTyping', (data) => {
-            console.log('Typing Stop Data---------->', data);
             setSenderUserObj(data?.currUserData);
             setTypingMessage('');
         });
 
         socket.on('receiveMessage', (messageData: any) => {
-            console.log('Messages Received---------------------------->', messageData);
             messages.push(messageData); // Add received message to the state
             setMessages(messages.filter((item: any, index: any) => index % 2 !== 0)); // Update the state with the new message
-            console.log('chatBoxRef----------->', chatBoxRef);
         });
 
         // return () => {
@@ -122,8 +116,6 @@ export default function ChatUser({ params }: { params: any }) {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    console.log(`Message User---------->`, currUserData, params?.chat, messages);
 
     return (
         <>
@@ -169,7 +161,7 @@ export default function ChatUser({ params }: { params: any }) {
                             :
                             <>
                                 <video autoPlay muted loop className="max-h-[70%] min-w-[70%] object-contain absolute top-[50px]">
-                                    <source src="http://localhost:3000/assets/mails.mp4" type="video/mp4" />
+                                    <source src="/assets/mails.mp4" type="video/mp4" />
                                 </video>
                                 {/* <p className="absolute">Send a message to start the Conversation</p> */}
                             </>

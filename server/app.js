@@ -19,10 +19,7 @@ const io = new Server(http, {
     },
 });
 
-console.log('Server Running------------->');
-
 io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
 
     const generateRoomId = (userId1, userId2) => {
         // Example: combine user IDs in alphabetical order to avoid duplicates
@@ -34,22 +31,18 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (roomId) => {
         // Check if the room already exists
         socket.join(roomId); // User joins the room
-        console.log('User', socket.id, 'joined room', roomId);
     });
 
     socket.on('typing', ({ roomId, currUserData }) => {
-        console.log('Server Typing--------->', roomId, currUserData);
         socket.to(roomId).emit('typing', { currUserData });
     });
 
     socket.on('stopTyping', ({ roomId, currUserData }) => {
-        console.log('Server Typing Stop--------->', currUserData);
         socket.to(roomId).emit('stopTyping', { currUserData });
     });
 
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
-        console.log('Received message:', messageData);
         const roomId = generateRoomId(messageData?.roomId); // Use generateRoomId here
         io.to(messageData?.roomId).emit('receiveMessage', messageData);
     });
@@ -107,7 +100,6 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 //Starting Server Port
-// app.listen('5000', () => console.log('Server Running on Port:5000'));
 http.listen('5000', () => console.log('Server Running on Port:5000'));
 
 module.exports = app;

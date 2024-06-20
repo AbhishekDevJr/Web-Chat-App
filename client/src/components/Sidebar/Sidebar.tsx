@@ -30,9 +30,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
             (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_')
             :
             [];
-        console.log('IDS------------->', (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_'));
 
-        console.log('User Con------------>', currUserData?._id, id2, userFriendList.find((item: any) => item?._id.includes(id2)));
 
         if (currUserData?._id === id1) {
             return userFriendList.find((item: any) => item?._id.includes(id2));
@@ -210,8 +208,6 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
             preserveAspectRatio: "xMidYMid slice"
         }
     };
-
-    console.log('Selected User-------------->', selectedUser);
 
     return (
 

@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { addSvg, notificationSvg, searchSvg } from "@/helpers/constants";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,7 +22,8 @@ export default function LoggedInLayout({
     const router = useRouter();
     const [friendRequestData, setFriendRequestData] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});
-    const [userFriendList, setUserFriendList] = useState(JSON.parse(localStorage.getItem('friendList') || "[]"));
+
+    const [userFriendList, setUserFriendList] = useState(JSON.parse("[]"));
 
     const profileContent = (
         <div className="flex flex-col gap-[10px] min-w-[200px]">
@@ -33,6 +34,12 @@ export default function LoggedInLayout({
             </button>
         </div>
     );
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setUserFriendList(JSON.parse(localStorage.getItem('friendList') || "[]"));
+        }
+    }, []);
 
 
     const signOutApi = async () => {
@@ -285,7 +292,6 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
-                console.log('Noti Invalid---------->',);
                 localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
@@ -337,8 +343,6 @@ export default function LoggedInLayout({
         cookieCheckerApi();
         getCurrentUserInfo();
     }, []);
-
-    console.log('RoomId------------>', userFriendList, currUserData);
 
     return (
         <div className='container-user-layout flex flex-col min-h-[100vh] border-solid bg-[white]'>
