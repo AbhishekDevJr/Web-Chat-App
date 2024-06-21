@@ -74,6 +74,7 @@ exports.signin = asyncHandler(async (req, res, next) => {
                         sameSite: 'none',
                         httpOnly: false,
                         secure: true,
+                        maxAge: 24 * 60 * 60 * 1000
                     });
 
                     res.status(200).cookie('token', token, {
@@ -81,6 +82,7 @@ exports.signin = asyncHandler(async (req, res, next) => {
                         sameSite: 'none',
                         httpOnly: true,
                         secure: true,
+                        maxAge: 24 * 60 * 60 * 1000
                     }).json({
                         title: 'Authentication Successful',
                         msg: 'User Successfully Authenticated.',
