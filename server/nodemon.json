@@ -1,0 +1,6 @@
+{
+    "watch": ["src", "config"],
+    "ignore": ["node_modules", ".git", "logs"],
+    "legacyWatch": true
+  }
+  
