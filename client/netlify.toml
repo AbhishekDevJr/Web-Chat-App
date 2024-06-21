@@ -1,8 +1,0 @@
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-  [[redirects]]
-  from = "/_next/static/*"
-  to = "/static/:splat"
-  status = 301
-  force = true
