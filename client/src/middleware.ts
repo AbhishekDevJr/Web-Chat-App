@@ -10,5 +10,5 @@ export default function middleware(req: any) {
 
     if (!verify && isProtectedRoute) return NextResponse.redirect('https://web-chat-app-npjp.onrender.com/');
 
-    if (verify && isPublicRoute) return NextResponse.redirect('https://web-chat-app-npjp.onrender.com//userdashboard');
+    if (verify && isPublicRoute) return NextResponse.redirect('https://web-chat-app-npjp.onrender.com/userdashboard');
 }
