@@ -71,16 +71,16 @@ exports.signin = asyncHandler(async (req, res, next) => {
                     const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
                     res.cookie('userinfo', userinfo, {
-                        sameSite: 'lax',
+                        sameSite: 'none',
                         httpOnly: false,
-                        secure: false,
+                        secure: true,
                     });
 
                     res.status(200).cookie('token', token, {
                         // maxAge: 3600000,
-                        sameSite: 'lax',
+                        sameSite: 'none',
                         httpOnly: true,
-                        secure: false,
+                        secure: true,
                     }).json({
                         title: 'Authentication Successful',
                         msg: 'User Successfully Authenticated.',
