@@ -1,7 +1,2 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[[redirects]]
-  from = "/.next/static/*"
-  to = "/.next/static/:splat"
-  status = 200
