@@ -4,6 +4,7 @@ const UserModel = require('../Models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const FriendReqModel = require('../Models/friendRequest');
+require('dotenv').config();
 
 exports.index = asyncHandler(async (req, res, next) => {
 
@@ -63,9 +64,9 @@ exports.signin = asyncHandler(async (req, res, next) => {
                 const isPasswordCorrect = await bcrypt.compare(req?.body?.password, userExists?.password);
 
                 if (isPasswordCorrect) {
-                    const token = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, `myTokenSecretKey`, { expiresIn: '1H' });
+                    const token = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName }, process.env.JWT_KEY, { expiresIn: '1H' });
 
-                    const userinfo = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName, _id: userExists?._id }, `myTokenSecretKey`, { expiresIn: '1H' });
+                    const userinfo = jwt.sign({ username: userExists?.email, firstName: userExists?.firstName, lastName: userExists?.lastName, _id: userExists?._id }, process.env.JWT_KEY, { expiresIn: '1H' });
 
                     const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
@@ -190,7 +191,7 @@ exports.requests = asyncHandler(async (req, res, next) => {
                 const token = req?.cookies?.token;
 
                 try {
-                    const decoded = jwt.verify(token, 'myTokenSecretKey');
+                    const decoded = jwt.verify(token, process.env.JWT_KEY);
                     const currUserName = decoded?.username;
 
                     const sender = await UserModel.findOne({ email: currUserName });
@@ -249,7 +250,7 @@ exports.requests = asyncHandler(async (req, res, next) => {
 exports.notifications = asyncHandler(async (req, res, next) => {
     try {
         const token = req?.cookies?.token;
-        const decoded = jwt.verify(token, 'myTokenSecretKey');
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
         const currUserName = decoded?.username;
 
         const userId = await UserModel.findOne({ email: currUserName });
@@ -294,7 +295,7 @@ exports.notifications = asyncHandler(async (req, res, next) => {
 exports.accept = asyncHandler(async (req, res, next) => {
     try {
         const token = req?.cookies?.token;
-        const decoded = jwt.verify(token, 'myTokenSecretKey');
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
         const currUserName = decoded?.username;
 
         const friendReqSender = req?.body?.sender;
@@ -352,7 +353,7 @@ exports.accept = asyncHandler(async (req, res, next) => {
 exports.reject = asyncHandler(async (req, res, next) => {
     try {
         const token = req?.cookies?.token;
-        const decoded = jwt.verify(token, 'myTokenSecretKey');
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
         const currUserName = decoded?.username;
 
         const friendReqSender = req?.body?.sender;

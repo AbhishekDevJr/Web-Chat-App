@@ -13,7 +13,7 @@ function SingInComp() {
 
     const userAuthApi = async (reqBody: any) => {
         try {
-            const userAuth = await fetch('http://localhost:5000/user/signin', {
+            const userAuth = await fetch('https://exclusive-messenger.up.railway.app/user/signin', {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {

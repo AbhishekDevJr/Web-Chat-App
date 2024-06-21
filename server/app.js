@@ -14,7 +14,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = new Server(http, {
     cors: {
-        origin: 'http://localhost:3000', // Replace with your React app's URL
+        origin: process.env.ORIGIN, // Replace with your React app's URL
         methods: ['GET', 'POST'],
     },
 });
@@ -53,21 +53,8 @@ io.on('connection', (socket) => {
     });
 });
 
-
-// io.on('connection', (socket) => {
-//     socket.on("login", ({ name, room }, callback) => {
-
-//     })
-//     socket.on("sendMessage", message => {
-
-//     })
-//     socket.on("disconnect", () => {
-
-//     })
-// })
-
 //Connecting to MongoDB Using Mongoose ODM
-mongoose.connect('mongodb+srv://abhishek007coc:MirXHuz64DLzI8kb@cluster0.lpnqwnl.mongodb.net/ExclusiveMessenger', {
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     tls: true,
@@ -89,7 +76,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.ORIGIN,
     credentials: true,
 }));
 
@@ -100,6 +87,6 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 //Starting Server Port
-http.listen('5000', () => console.log('Server Running on Port:5000'));
+http.listen(process.env.PORT || '5000', () => console.log('Server Running on Port:5000'));
 
 module.exports = app;

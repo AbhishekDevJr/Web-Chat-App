@@ -14,7 +14,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const socket = io('http://localhost:5000', { autoConnect: false });
+    const socket = io('https://exclusive-messenger.up.railway.app', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
@@ -55,7 +55,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const searchFriendApi = async (username: String) => {
         try {
-            const searchFrndRes = await fetch('http://localhost:5000/user/search', {
+            const searchFrndRes = await fetch('https://exclusive-messenger.up.railway.app/user/search', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -124,7 +124,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const addFriendApi = async (username: String) => {
         try {
-            const addFriendRes = await fetch('http://localhost:5000/user/requests', {
+            const addFriendRes = await fetch('https://exclusive-messenger.up.railway.app/user/requests', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
