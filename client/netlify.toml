@@ -2,6 +2,6 @@
   package = "@netlify/plugin-nextjs"
 
 [[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
+  from = "/.next/static/*"
+  to = "/.next/static/:splat"
   status = 200
