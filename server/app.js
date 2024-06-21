@@ -8,6 +8,7 @@ const userRouter = require('./Routes/userRouter');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
+const httpModule = require('http');
 
 const app = express();
 
@@ -51,6 +52,23 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
     });
+});
+
+httpModule.get('http://ifconfig.me/ip', (resp) => {
+    let data = '';
+
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+        data += chunk;
+    });
+
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+        console.log(`Outbound IP Address: ${data}`);
+    });
+
+}).on("error", (err) => {
+    console.log("Error: " + err.message);
 });
 
 //Connecting to MongoDB Using Mongoose ODM
