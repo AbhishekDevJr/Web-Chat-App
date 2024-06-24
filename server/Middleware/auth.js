@@ -15,13 +15,13 @@ exports.auth = asyncHandler(async (req, res, next) => {
             if (err) {
                 res.clearCookie('token', { path: '/' });
                 res.clearCookie('userinfo', { path: '/' });
-                return res.status(401).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token 1' });
+                return res.status(401).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token' });
             }
         });
         next();
     } catch (err) {
         res.clearCookie('token', { path: '/' });
         res.clearCookie('userinfo', { path: '/' });
-        res.status(400).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token 2', redirectTo: '/signin' });
+        res.status(400).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token', redirectTo: '/signin' });
     }
 });
