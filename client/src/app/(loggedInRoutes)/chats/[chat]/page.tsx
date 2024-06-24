@@ -39,29 +39,29 @@ export default function ChatUser({ params }: { params: any }) {
         setUserMessage('');
     };
 
-    const handleTyping = () => {
-        if (!isTyping) {
-            setIsTyping(true);
-            socket.emit('typing', { roomId: params?.chat, currUserData });
-        }
+    // const handleTyping = () => {
+    //     if (!isTyping) {
+    //         setIsTyping(true);
+    //         socket.emit('typing', { roomId: params?.chat, currUserData });
+    //     }
 
-        clearTimeout(typingTimeout);
+    //     clearTimeout(typingTimeout);
 
-        typingTimeout = setTimeout(() => {
-            setIsTyping(false);
-            if (!isTyping) {
-                socket.emit('stopTyping', { roomId: params?.chat, currUserData });
-            }
-        }, 2000);
+    //     typingTimeout = setTimeout(() => {
+    //         setIsTyping(false);
+    //         if (!isTyping) {
+    //             socket.emit('stopTyping', { roomId: params?.chat, currUserData });
+    //         }
+    //     }, 2000);
 
-        // clearTimeout(typingTimeout);
-    }
+    //     // clearTimeout(typingTimeout);
+    // }
 
-    let typingTimeout: any;
+    // let typingTimeout: any;
 
     const handleMsgInputChange = (val: any) => {
         setUserMessage(val);
-        handleTyping();
+        // handleTyping();
     }
 
     const getCurrentUserInfo = () => {
@@ -108,10 +108,10 @@ export default function ChatUser({ params }: { params: any }) {
             setMessages(messages); // Update the state with the new message
         });
 
-        // return () => {
-        //     socket.disconnect();
-        //     socket.off('receiveMessage');
-        // };
+        return () => {
+            socket.disconnect();
+            socket.off('receiveMessage');
+        };
     }, []);
 
     useEffect(() => {
