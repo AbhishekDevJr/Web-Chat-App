@@ -129,8 +129,19 @@ exports.signout = asyncHandler(async (req, res, next) => {
         const userinfocookie = req?.cookies.userinfo;
 
         if (jwtToken) {
-            res.clearCookie('token', { path: '/' });
-            res.clearCookie('userinfo', { path: '/' });
+            res.clearCookie('token', {
+                // maxAge: 3600000,
+                domain: 'railway.app',
+                path: '/',
+                sameSite: 'none',
+                secure: true,
+            });
+            res.clearCookie('userinfo', {
+                domain: 'railway.app',
+                path: '/',
+                sameSite: 'none',
+                secure: true,
+            });
             res.status(200).json({
                 title: `Logged Out`,
                 msg: `Logged Out Successfully.`
