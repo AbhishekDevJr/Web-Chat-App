@@ -326,10 +326,12 @@ export default function LoggedInLayout({
 
     const getCurrentUserInfo = () => {
         const userinfo = Cookies.get('userinfo');
+        console.log('UserInfo Cookie---------->', userinfo);
 
         if (userinfo) {
             try {
                 const decoded = jwtDecode(userinfo);
+                console.log('Decoded User Info------------>', decoded);
                 setCurrUserData(decoded);
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
