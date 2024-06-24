@@ -108,10 +108,10 @@ export default function ChatUser({ params }: { params: any }) {
             setMessages(messages); // Update the state with the new message
         });
 
-        return () => {
-            socket.disconnect();
-            socket.off('receiveMessage');
-        };
+        // return () => {
+        //     socket.disconnect();
+        //     socket.off('receiveMessage');
+        // };
     }, []);
 
     useEffect(() => {
