@@ -44,7 +44,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         e.preventDefault();
         const senderUserId = currUserData?._id;
         const recieverUserId = userFriendList[index]?._id;
-        console.log('Chat Room Redirect------------->', e, index, senderUserId && recieverUserId, senderUserId && recieverUserId, generateRoomId(senderUserId, recieverUserId));
+        console.log('Chat Room Redirect------------->', e, index, senderUserId && recieverUserId, senderUserId, recieverUserId, userFriendList, generateRoomId(senderUserId, recieverUserId));
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
             setSelectedUser(userFriendList.find(((item: any) => item?._id.includes(recieverUserId))));

@@ -41,6 +41,8 @@ export default function LoggedInLayout({
         }
     }, []);
 
+    console.log('UserFriendList------------->', userFriendList);
+
 
     const signOutApi = async () => {
         try {
