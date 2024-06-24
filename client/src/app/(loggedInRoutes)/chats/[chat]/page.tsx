@@ -8,10 +8,11 @@ import { jwtDecode } from 'jwt-decode'; // For JWT parsing
 import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
 
+const socket = io('https://exclusive-messenger-server.up.railway.app/', { autoConnect: true });
+
 export default function ChatUser({ params }: { params: any }) {
     // const [currUser, setCurrUser] = useState<any>({});
 
-    const socket = io('https://exclusive-messenger-server.up.railway.app/', { autoConnect: true });
     const [userMessage, setUserMessage] = useState('');
     const [messages, setMessages] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});
