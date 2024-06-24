@@ -10,7 +10,7 @@ export default function middleware(req: any) {
 
     console.log('1st Con-------->', !verify && isProtectedRoute, '2nd Con-------->', verify && isPublicRoute, verify, isPublicRoute);
 
-    // if (!verify && isProtectedRoute) return NextResponse.redirect('https://web-chat-app-production.up.railway.app/');
+    if (!verify && isProtectedRoute) return NextResponse.redirect('https://web-chat-app-production.up.railway.app/');
 
-    // if (verify && isPublicRoute) return NextResponse.redirect('https://web-chat-app-production.up.railway.app/userdashboard');
+    if (verify && isPublicRoute) return NextResponse.redirect('https://web-chat-app-production.up.railway.app/userdashboard');
 }
