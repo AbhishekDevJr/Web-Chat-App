@@ -105,7 +105,7 @@ export default function ChatUser({ params }: { params: any }) {
 
         socket.on('receiveMessage', (messageData: any) => {
             messages.push(messageData); // Add received message to the state
-            setMessages(messages.filter((item: any, index: any) => index % 2 !== 0)); // Update the state with the new message
+            setMessages(messages); // Update the state with the new message
         });
 
         // return () => {
