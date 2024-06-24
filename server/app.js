@@ -9,6 +9,7 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
 const httpModule = require('http');
+const ws = require('ws');
 
 const app = express();
 
@@ -18,7 +19,7 @@ const io = new Server(http, {
         origin: process.env.ORIGIN, // Replace with your React app's URL
         methods: ['GET', 'POST'],
     },
-    wsEngine: 'ws'
+    wsEngine: ws.Server
 });
 
 io.on('connection', (socket) => {
