@@ -70,8 +70,6 @@ exports.signin = asyncHandler(async (req, res, next) => {
 
                     const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
-                    console.log('SinIn Server---------->', userinfo, token);
-
                     res.cookie('userinfo', userinfo, {
                         domain: 'railway.app',
                         path: '/',

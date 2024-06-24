@@ -13,7 +13,7 @@ function SingInComp() {
 
     const userAuthApi = async (reqBody: any) => {
         try {
-            const userAuth = await fetch('https://exclusive-messenger.up.railway.app/user/signin', {
+            const userAuth = await fetch('exclusive-messenger-server.up.railway.app/user/signin', {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {
@@ -37,7 +37,6 @@ function SingInComp() {
                 });
                 form.resetFields();
                 localStorage.setItem('friendList', JSON.stringify(userAuthParsed?.friendList));
-                console.log('Success SignIn------------->', userAuthParsed);
                 setTimeout(() => router.push('/userdashboard'), 2000);
             }
             else {

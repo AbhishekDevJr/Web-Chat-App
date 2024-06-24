@@ -14,7 +14,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const socket = io('https://exclusive-messenger.up.railway.app', { autoConnect: false });
+    const socket = io('exclusive-messenger-server.up.railway.app', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
@@ -44,7 +44,6 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         e.preventDefault();
         const senderUserId = currUserData?._id;
         const recieverUserId = userFriendList[index]?._id;
-        console.log('Chat Room Redirect------------->', e, index, senderUserId && recieverUserId, senderUserId, recieverUserId, userFriendList, generateRoomId(senderUserId, recieverUserId));
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
             setSelectedUser(userFriendList.find(((item: any) => item?._id.includes(recieverUserId))));
@@ -56,7 +55,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const searchFriendApi = async (username: String) => {
         try {
-            const searchFrndRes = await fetch('https://exclusive-messenger.up.railway.app/user/search', {
+            const searchFrndRes = await fetch('exclusive-messenger-server.up.railway.app/user/search', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -125,7 +124,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const addFriendApi = async (username: String) => {
         try {
-            const addFriendRes = await fetch('https://exclusive-messenger.up.railway.app/user/requests', {
+            const addFriendRes = await fetch('exclusive-messenger-server.up.railway.app/user/requests', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
