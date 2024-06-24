@@ -11,7 +11,7 @@ import { isEmpty } from "lodash";
 export default function ChatUser({ params }: { params: any }) {
     // const [currUser, setCurrUser] = useState<any>({});
 
-    const socket = io('exclusive-messenger-server.up.railway.app', { autoConnect: true });
+    const socket = io('https://exclusive-messenger-server.up.railway.app/', { autoConnect: true });
     const [userMessage, setUserMessage] = useState('');
     const [messages, setMessages] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});

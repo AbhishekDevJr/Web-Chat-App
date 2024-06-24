@@ -43,7 +43,7 @@ export default function LoggedInLayout({
 
     const signOutApi = async () => {
         try {
-            const logOut = await fetch('exclusive-messenger-server.up.railway.app/user/signout', {
+            const logOut = await fetch('https://exclusive-messenger-server.up.railway.app//user/signout', {
                 method: 'POST',
                 // body: JSON.stringify(reqBody),
                 headers: {
@@ -111,7 +111,7 @@ export default function LoggedInLayout({
 
     const acceptFriendReqApi = async (username: String) => {
         try {
-            const friendReqAcceptRes = await fetch('exclusive-messenger-server.up.railway.app/user/requests/accept', {
+            const friendReqAcceptRes = await fetch('https://exclusive-messenger-server.up.railway.app//user/requests/accept', {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
                 headers: {
@@ -180,7 +180,7 @@ export default function LoggedInLayout({
 
     const rejectFriendReqApi = async (username: String) => {
         try {
-            const friendReqAcceptRes = await fetch('exclusive-messenger-server.up.railway.app/user/requests/reject', {
+            const friendReqAcceptRes = await fetch('https://exclusive-messenger-server.up.railway.app//user/requests/reject', {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
                 headers: {
@@ -254,7 +254,7 @@ export default function LoggedInLayout({
     }
 
     const cookieCheckerApi = async () => {
-        const cookieCheck = await fetch('exclusive-messenger-server.up.railway.app', {
+        const cookieCheck = await fetch('https://exclusive-messenger-server.up.railway.app/', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -267,7 +267,7 @@ export default function LoggedInLayout({
 
     const getNotificationDataApi = async () => {
         try {
-            const notificationData = await fetch('exclusive-messenger-server.up.railway.app/user/notifications', {
+            const notificationData = await fetch('https://exclusive-messenger-server.up.railway.app//user/notifications', {
                 method: 'GET',
                 // body: JSON.stringify({ username }),
                 headers: {
