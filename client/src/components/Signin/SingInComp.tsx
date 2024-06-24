@@ -37,6 +37,7 @@ function SingInComp() {
                 });
                 form.resetFields();
                 localStorage.setItem('friendList', JSON.stringify(userAuthParsed?.friendList));
+                console.log('Success SignIn------------->', userAuthParsed);
                 setTimeout(() => router.push('/userdashboard'), 2000);
             }
             else {
