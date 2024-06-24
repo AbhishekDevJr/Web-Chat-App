@@ -73,6 +73,8 @@ exports.signin = asyncHandler(async (req, res, next) => {
                     console.log('SinIn Server---------->', userinfo, token);
 
                     res.cookie('userinfo', userinfo, {
+                        domain: 'railway.app',
+                        path: '/',
                         sameSite: 'none',
                         httpOnly: false,
                         secure: true,
@@ -81,6 +83,8 @@ exports.signin = asyncHandler(async (req, res, next) => {
 
                     res.status(200).cookie('token', token, {
                         // maxAge: 3600000,
+                        domain: 'railway.app',
+                        path: '/',
                         sameSite: 'none',
                         httpOnly: true,
                         secure: true,
