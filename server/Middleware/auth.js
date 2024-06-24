@@ -11,17 +11,17 @@ exports.auth = asyncHandler(async (req, res, next) => {
             return res.status(401).json({ title: 'Unathorized Access', msg: 'Access Denied. No Token Available.' });
         }
 
-        const verified = jwt.verify(token, 'myTokenSecretKey', (err, decoded) => {
+        const verified = jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if (err) {
                 res.clearCookie('token', { path: '/' });
                 res.clearCookie('userinfo', { path: '/' });
-                return res.status(401).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token' });
+                return res.status(401).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token 1' });
             }
         });
         next();
     } catch (err) {
         res.clearCookie('token', { path: '/' });
         res.clearCookie('userinfo', { path: '/' });
-        res.status(400).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token', redirectTo: '/signin' });
+        res.status(400).json({ title: 'Invalid JWT Token', msg: 'Invalid Auth JWT Token 2', redirectTo: '/signin' });
     }
 });
