@@ -14,7 +14,8 @@ function SignUpComp() {
     const userSubmitAPI = async (reqBody: any) => {
         try {
 
-            const userSubmit = await fetch('https://exclusive-messenger-server.up.railway.app//user/signup', {
+            const userSubmit = await fetch('
+https://exclusive-messenger-server.up.railway.app/user/signup', {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {

@@ -55,7 +55,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const searchFriendApi = async (username: String) => {
         try {
-            const searchFrndRes = await fetch('https://exclusive-messenger-server.up.railway.app//user/search', {
+            const searchFrndRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/search', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -124,7 +124,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const addFriendApi = async (username: String) => {
         try {
-            const addFriendRes = await fetch('https://exclusive-messenger-server.up.railway.app//user/requests', {
+            const addFriendRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/requests', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
