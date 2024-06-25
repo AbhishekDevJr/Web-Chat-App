@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import LoginHeader from "../../components/LoginHeader/LoginHeader";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar/Sidebar";
+import { Spin } from "antd";
 
 export default function LoggedInLayout({
     children
@@ -24,6 +25,7 @@ export default function LoggedInLayout({
     const [currUserData, setCurrUserData] = useState<any>({});
     const [userFriendList, setUserFriendList] = useState(JSON.parse("[]"));
     const [notiLoading, setNotiLoading] = useState(false);
+    const [exitLoading, setExitLoading] = useState(false);
 
     const profileContent = (
         <div className="flex flex-col gap-[10px] min-w-[200px]">
@@ -43,6 +45,7 @@ export default function LoggedInLayout({
 
     const signOutApi = async () => {
         try {
+            setExitLoading(true);
             const logOut = await fetch('https://exclusive-messenger-server.up.railway.app/user/signout', {
                 method: 'POST',
                 // body: JSON.stringify(reqBody),
@@ -66,6 +69,7 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setExitLoading(false);
                 setTimeout(() => router.push('/signin'), 1000);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(logOutParsed?.title)) {
@@ -80,6 +84,7 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setExitLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -93,6 +98,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setExitLoading(false);
             }
 
         } catch (err: any) {
@@ -106,6 +112,7 @@ export default function LoggedInLayout({
                 progress: undefined,
                 theme: "dark",
             });
+            setExitLoading(false);
         }
     }
 
@@ -359,45 +366,49 @@ export default function LoggedInLayout({
     }, []);
 
     return (
-        <div className='container-user-layout flex flex-col min-h-[100vh] border-solid bg-[white]'>
-            <LoginHeader
-                searchSvg={searchSvg}
-                friendRequestData={friendRequestData}
-                bgColors={bgColors}
-                handleAcceptFriendReq={handleAcceptFriendReq}
-                handleRejectFriendReq={handleRejectFriendReq}
-                getNotificationData={getNotificationData}
-                notificationSvg={notificationSvg}
-                profileContent={profileContent}
-                currUserData={currUserData}
-                notiLoading={notiLoading}
-            />
+        <>
+            <Spin tip="Fetching..." size="large" fullscreen={false} spinning={exitLoading}>
+                <div className='container-user-layout flex flex-col min-h-[100vh] border-solid bg-[white]'>
+                    <LoginHeader
+                        searchSvg={searchSvg}
+                        friendRequestData={friendRequestData}
+                        bgColors={bgColors}
+                        handleAcceptFriendReq={handleAcceptFriendReq}
+                        handleRejectFriendReq={handleRejectFriendReq}
+                        getNotificationData={getNotificationData}
+                        notificationSvg={notificationSvg}
+                        profileContent={profileContent}
+                        currUserData={currUserData}
+                        notiLoading={notiLoading}
+                    />
 
-            <div className='container-childred flex justify-between grow-[1]'>
-                <Sidebar
-                    userFriendList={userFriendList}
-                    bgColors={bgColors}
-                    addSvg={addSvg}
-                    currUserData={currUserData}
-                />
+                    <div className='container-childred flex justify-between grow-[1]'>
+                        <Sidebar
+                            userFriendList={userFriendList}
+                            bgColors={bgColors}
+                            addSvg={addSvg}
+                            currUserData={currUserData}
+                        />
 
-                <div className='container-main-section flex-1'>
-                    {children}
+                        <div className='container-main-section flex-1'>
+                            {children}
+                        </div>
+                    </div>
+                    <ToastContainer
+                        position="top-center"
+                        autoClose={3000}
+                        hideProgressBar={true}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        // pauseOnHover
+                        theme="dark"
+                    // transition: Bounce
+                    />
                 </div>
-            </div>
-            <ToastContainer
-                position="top-center"
-                autoClose={3000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                // pauseOnHover
-                theme="dark"
-            // transition: Bounce
-            />
-        </div>
+            </Spin>
+        </>
     );
 }
