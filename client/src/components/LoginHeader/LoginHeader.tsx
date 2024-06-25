@@ -1,6 +1,6 @@
 'use client';
 
-import { Input, Popover } from 'antd';
+import { Input, Popover, Spin } from 'antd';
 import { capitalize, isEmpty } from 'lodash';
 import Link from 'next/link'
 import React from 'react'
@@ -15,7 +15,8 @@ function HeaderComp(
         getNotificationData,
         notificationSvg,
         profileContent,
-        currUserData
+        currUserData,
+        notiLoading
     }
         :
         {
@@ -27,36 +28,41 @@ function HeaderComp(
             getNotificationData: any,
             notificationSvg: any,
             profileContent: any,
-            currUserData: any
+            currUserData: any,
+            notiLoading: boolean
         }
 ) {
 
     const notificationContent = (
-        <div className="min-w-[400px]">
-            <div className="flex items-center justify-between p-[10px] border-b-[2px] border-[#E5E1DA] mb-[20px]">
-                <p className="text-[18px] text-[#09090B] cursor-pointer border-b-[2px] border-[#09090B]">Notifications</p>
-                <p className="text-[#808080] text-[18px] cursor-pointer">Mark all as read</p>
-            </div>
-            <ul className="flex flex-col gap-[10px]">
-                {!isEmpty(friendRequestData) ? friendRequestData.map((item: any, index: any) =>
-                    <li key={index} className="flex items-center justify-between gap-[10px]">
-                        <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
-                        <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)} {capitalize(item.lastName)}</span>{` sent you a friend request.`}</span>
-                        <div className="flex gap-[10px]">
-                            <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
-                                Accept
-                            </button>
-                            <button onClick={() => handleRejectFriendReq(item)} type="submit" className='text-[#E72929] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#E72929] hover:bg-[#E72929] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
-                                Decline
-                            </button>
-                        </div>
-                    </li>)
-                    :
-                    <p className="text-[#09090B] font-[500] text-[16px] text-center">No New Notifications</p>
-                }
+        <>
+            <Spin tip="Fetching..." size="large" fullscreen={false} spinning={notiLoading}>
+                <div className="min-w-[400px]">
+                    <div className="flex items-center justify-between p-[10px] border-b-[2px] border-[#E5E1DA] mb-[20px]">
+                        <p className="text-[18px] text-[#09090B] cursor-pointer border-b-[2px] border-[#09090B]">Notifications</p>
+                        <p className="text-[#808080] text-[18px] cursor-pointer">Mark all as read</p>
+                    </div>
+                    <ul className="flex flex-col gap-[10px]">
+                        {!isEmpty(friendRequestData) ? friendRequestData.map((item: any, index: any) =>
+                            <li key={index} className="flex items-center justify-between gap-[10px]">
+                                <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{item.firstName[0]?.toUpperCase()}{item.lastName[0]?.toUpperCase()}</span>
+                                <span className="text-[16px]"><span className="font-[600]">{capitalize(item.firstName)} {capitalize(item.lastName)}</span>{` sent you a friend request.`}</span>
+                                <div className="flex gap-[10px]">
+                                    <button onClick={() => handleAcceptFriendReq(item)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
+                                        Accept
+                                    </button>
+                                    <button onClick={() => handleRejectFriendReq(item)} type="submit" className='text-[#E72929] text-[16px] font-[500] px-[15px] py-[5px] rounded-[5px] outline outline-[2px] outline-[#E72929] hover:bg-[#E72929] hover:text-[#F5F7F9] duration-300 hover:duration-300'>
+                                        Decline
+                                    </button>
+                                </div>
+                            </li>)
+                            :
+                            <p className="text-[#09090B] font-[500] text-[16px] text-center">No New Notifications</p>
+                        }
 
-            </ul>
-        </div>
+                    </ul>
+                </div>
+            </Spin>
+        </>
     );
 
 

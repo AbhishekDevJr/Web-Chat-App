@@ -1,6 +1,6 @@
 'use client';
 
-import { Input, Modal } from 'antd';
+import { Input, Modal, Spin } from 'antd';
 import { capitalize, isEmpty } from 'lodash';
 import React, { useLayoutEffect, useState } from 'react'
 import io from 'socket.io-client';
@@ -18,6 +18,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
+    const [friendModalLoading, setFriendModalLoading] = useState(false);
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
@@ -55,6 +56,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
     const searchFriendApi = async (username: String) => {
         try {
+            setFriendModalLoading(true);
             const searchFrndRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/search', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
@@ -77,7 +79,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
-
+                setFriendModalLoading(false);
                 setAddFriendResult(searchFrndResJson);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(searchFrndResJson?.title)) {
@@ -92,6 +94,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setFriendModalLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -105,6 +108,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+                setFriendModalLoading(false);
                 setAddFriendResult(null);
             }
         }
@@ -119,11 +123,13 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 progress: undefined,
                 theme: "dark",
             });
+            setFriendModalLoading(false);
         }
     }
 
     const addFriendApi = async (username: String) => {
         try {
+            setFriendModalLoading(true);
             const addFriendRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/requests', {
                 method: 'POST',
                 body: JSON.stringify({ username }),
@@ -146,6 +152,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+                setFriendModalLoading(false);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(addFriendResJson?.title)) {
                 toast.error(`${addFriendResJson?.msg}`, {
@@ -159,6 +166,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setFriendModalLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -172,6 +180,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     progress: undefined,
                     theme: "dark",
                 });
+                setFriendModalLoading(false);
             }
         }
         catch (err: any) {
@@ -185,6 +194,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 progress: undefined,
                 theme: "dark",
             });
+            setFriendModalLoading(false);
         }
     }
 
@@ -264,29 +274,33 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 setAddFriendString('');
                 setAddFriendResult(null);
             }} centered>
-                <div className='add-friend-modal flex flex-col gap-[10px]'>
-                    <p className='text-[22px]'>Search Friend using Username or Email.</p>
-                    <Input onChange={(e) => setAddFriendString(e.target.value)} value={addFriendString} onPressEnter={handleAddFriendSearch} className='border-[2px] py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px]' type='text' placeholder="Search Friend..." />
-                    <button onClick={handleAddFriendSearch} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[25px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] mx-[auto] tracking-[1px] duration-300 hover:duration-300'>
-                        SEARCH
-                    </button>
+                <>
+                    <Spin tip="Fetching..." size="large" fullscreen={false} spinning={friendModalLoading}>
+                        <div className='add-friend-modal flex flex-col gap-[10px]'>
+                            <p className='text-[22px]'>Search Friend using Username or Email.</p>
+                            <Input onChange={(e) => setAddFriendString(e.target.value)} value={addFriendString} onPressEnter={handleAddFriendSearch} className='border-[2px] py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px]' type='text' placeholder="Search Friend..." />
+                            <button onClick={handleAddFriendSearch} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[25px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] mx-[auto] tracking-[1px] duration-300 hover:duration-300'>
+                                SEARCH
+                            </button>
 
-                    <div className=''>
-                        {addFriendResult ?
-                            <div className='flex justify-start gap-[15px] items-center mt-[20px]'>
-                                <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
-                                <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstName)} {capitalize(addFriendResult.lastName)}</span></span>
-                                <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[20px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] ml-[auto] duration-300 hover:duration-300'>
-                                    ADD FRIEND
-                                </button>
+                            <div className=''>
+                                {addFriendResult ?
+                                    <div className='flex justify-start gap-[15px] items-center mt-[20px]'>
+                                        <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
+                                        <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstName)} {capitalize(addFriendResult.lastName)}</span></span>
+                                        <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[20px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] ml-[auto] duration-300 hover:duration-300'>
+                                            ADD FRIEND
+                                        </button>
+                                    </div>
+                                    :
+                                    <p className='text-[18px] text-center'>
+                                        No User Found
+                                    </p>
+                                }
                             </div>
-                            :
-                            <p className='text-[18px] text-center'>
-                                No User Found
-                            </p>
-                        }
-                    </div>
-                </div>
+                        </div>
+                    </Spin>
+                </>
             </Modal>
         </>
     )

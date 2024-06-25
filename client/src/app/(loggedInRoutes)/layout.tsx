@@ -22,8 +22,8 @@ export default function LoggedInLayout({
     const router = useRouter();
     const [friendRequestData, setFriendRequestData] = useState<any>([]);
     const [currUserData, setCurrUserData] = useState<any>({});
-
     const [userFriendList, setUserFriendList] = useState(JSON.parse("[]"));
+    const [notiLoading, setNotiLoading] = useState(false);
 
     const profileContent = (
         <div className="flex flex-col gap-[10px] min-w-[200px]">
@@ -111,6 +111,7 @@ export default function LoggedInLayout({
 
     const acceptFriendReqApi = async (username: String) => {
         try {
+            setNotiLoading(true);
             const friendReqAcceptRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/requests/accept', {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
@@ -135,6 +136,7 @@ export default function LoggedInLayout({
                 });
                 setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
                 setUserFriendList(friendReqAcceptResJson?.friendList);
+                setNotiLoading(false);
                 localStorage.setItem('friendList', JSON.stringify(friendReqAcceptResJson?.friendList));
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(friendReqAcceptResJson?.title)) {
@@ -149,6 +151,7 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setNotiLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -162,6 +165,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setNotiLoading(false);
             }
 
         } catch (err: any) {
@@ -175,11 +179,13 @@ export default function LoggedInLayout({
                 progress: undefined,
                 theme: "dark",
             });
+            setNotiLoading(false);
         }
     }
 
     const rejectFriendReqApi = async (username: String) => {
         try {
+            setNotiLoading(true);
             const friendReqAcceptRes = await fetch('https://exclusive-messenger-server.up.railway.app/user/requests/reject', {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
@@ -202,6 +208,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setNotiLoading(false);
                 setFriendRequestData(friendReqAcceptResJson?.pendingRequestData);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(friendReqAcceptResJson?.title)) {
@@ -215,6 +222,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setNotiLoading(false);
                 localStorage.removeItem('friendList');
                 setTimeout(() => router.push('/signin'), 2000);
             }
@@ -229,6 +237,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setNotiLoading(false);
             }
 
         } catch (err: any) {
@@ -242,6 +251,7 @@ export default function LoggedInLayout({
                 progress: undefined,
                 theme: "dark",
             });
+            setNotiLoading(false);
         }
     }
 
@@ -267,7 +277,8 @@ export default function LoggedInLayout({
 
     const getNotificationDataApi = async () => {
         try {
-            const notificationData = await fetch('https://exclusive-messenger-server.up.railway.app/user/notifications', {
+            setNotiLoading(true);
+            const notificationData = await fetch('http://localhost:5000/user/notifications', {
                 method: 'GET',
                 // body: JSON.stringify({ username }),
                 headers: {
@@ -279,6 +290,7 @@ export default function LoggedInLayout({
             const notificationDataJson = await notificationData.json();
             if (['Request User Data', 'No Friend Requests Found'].includes(notificationDataJson?.title)) {
                 setFriendRequestData(notificationDataJson?.data);
+                setNotiLoading(false);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(notificationDataJson?.title)) {
                 toast.error(`${notificationDataJson?.msg}`, {
@@ -292,6 +304,7 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                setNotiLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
@@ -305,6 +318,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
+                setNotiLoading(false);
             }
 
         } catch (err: any) {
@@ -318,6 +332,7 @@ export default function LoggedInLayout({
                 progress: undefined,
                 theme: "dark",
             });
+            setNotiLoading(false);
         }
     }
 
@@ -355,6 +370,7 @@ export default function LoggedInLayout({
                 notificationSvg={notificationSvg}
                 profileContent={profileContent}
                 currUserData={currUserData}
+                notiLoading={notiLoading}
             />
 
             <div className='container-childred flex justify-between grow-[1]'>
