@@ -36,13 +36,13 @@ io.on('connection', (socket) => {
         socket.join(roomId); // User joins the room
     });
 
-    // socket.on('typing', ({ roomId, currUserData }) => {
-    //     socket.to(roomId).emit('typing', { currUserData });
-    // });
+    socket.on('typing', ({ roomId, currUserData }) => {
+        socket.to(roomId).emit('typing', { currUserData });
+    });
 
-    // socket.on('stopTyping', ({ roomId, currUserData }) => {
-    //     socket.to(roomId).emit('stopTyping', { currUserData });
-    // });
+    socket.on('stopTyping', ({ roomId, currUserData }) => {
+        socket.to(roomId).emit('stopTyping', { currUserData });
+    });
 
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
