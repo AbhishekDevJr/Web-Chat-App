@@ -93,7 +93,7 @@ function SingInComp() {
                 theme="dark"
             // transition: Bounce
             />
-            <Spin tip="Fetching..." size="large" fullscreen={isLoading} spinning={isLoading}>
+            <Spin tip="Fetching..." size="large" fullscreen={false} spinning={isLoading}>
                 <div className=''>
                     <div className={`container-signin`}>
                         <Form
