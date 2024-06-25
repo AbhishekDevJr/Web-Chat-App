@@ -278,7 +278,7 @@ export default function LoggedInLayout({
     const getNotificationDataApi = async () => {
         try {
             setNotiLoading(true);
-            const notificationData = await fetch('http://localhost:5000/user/notifications', {
+            const notificationData = await fetch('https://exclusive-messenger-server.up.railway.app/user/notifications', {
                 method: 'GET',
                 // body: JSON.stringify({ username }),
                 headers: {
