@@ -35,7 +35,9 @@ export default function ChatUser({ params }: { params: any }) {
     };
 
     const handleSendMessage = () => {
-        socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
+        if (userMessage) {
+            socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
+        }
         setUserMessage('');
     };
 
@@ -49,9 +51,7 @@ export default function ChatUser({ params }: { params: any }) {
 
         typingTimeout = setTimeout(() => {
             setIsTyping(false);
-            if (!isTyping) {
-                socket.emit('stopTyping', { roomId: params?.chat, currUserData });
-            }
+            socket.emit('stopTyping', { roomId: params?.chat, currUserData });
         }, 2000);
 
         // clearTimeout(typingTimeout);
@@ -104,14 +104,9 @@ export default function ChatUser({ params }: { params: any }) {
         });
 
         socket.on('receiveMessage', (messageData: any) => {
-            messages.push(messageData); // Add received message to the state
-            setMessages(messages); // Update the state with the new message
+            setMessages((prevMessages: any) => [...prevMessages, messageData]);
         });
 
-        // return () => {
-        //     socket.disconnect();
-        //     socket.off('receiveMessage');
-        // };
     }, []);
 
     useEffect(() => {

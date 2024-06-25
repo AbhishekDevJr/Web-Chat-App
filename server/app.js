@@ -50,6 +50,10 @@ io.on('connection', (socket) => {
         io.to(messageData?.roomId).emit('receiveMessage', messageData);
     });
 
+    socket.on('tempEmit', (tempEmitData) => {
+        socket.to(roomId).emit('tempEmitReceive', tempEmitData);
+    });
+
     // Handle user disconnection
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
