@@ -15,7 +15,7 @@ function SignUpComp() {
     const userSubmitAPI = async (reqBody: any) => {
         try {
             setIsLoading(true);
-            const userSubmit = await fetch('https://exclusive-messenger-server.up.railway.app/user/signup', {
+            const userSubmit = await fetch(`${process.env.ORIGIN}/user/signup`, {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {

@@ -16,7 +16,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = new Server(http, {
     cors: {
-        origin: process.env.ORIGIN, // Replace with your React app's URL
+        origin: process.env.ORIGIN,
         methods: ['GET', 'POST'],
     },
     wsEngine: ws.Server
@@ -25,7 +25,6 @@ const io = new Server(http, {
 io.on('connection', (socket) => {
 
     const generateRoomId = (userId1, userId2) => {
-        // Example: combine user IDs in alphabetical order to avoid duplicates
         const [id1, id2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
         return `${id1}_${id2}`;
     };
@@ -46,7 +45,7 @@ io.on('connection', (socket) => {
 
     // Handle sending messages
     socket.on('sendMessage', (messageData) => {
-        const roomId = generateRoomId(messageData?.roomId); // Use generateRoomId here
+        const roomId = generateRoomId(messageData?.roomId);
         io.to(messageData?.roomId).emit('receiveMessage', messageData);
     });
 
