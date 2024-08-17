@@ -14,7 +14,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const socket = io('https://exclusive-messenger-server.up.railway.app/', { autoConnect: false });
+    const socket = io('https://web-chat-app-1-99cb.onrender.com/', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
@@ -57,7 +57,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const searchFriendApi = async (username: String) => {
         try {
             setFriendModalLoading(true);
-            const searchFrndRes = await fetch(`${process.env.ORIGIN}/user/search`, {
+            const searchFrndRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/search`, {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -130,7 +130,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const addFriendApi = async (username: String) => {
         try {
             setFriendModalLoading(true);
-            const addFriendRes = await fetch(`${process.env.ORIGIN}/user/requests`, {
+            const addFriendRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/requests`, {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {

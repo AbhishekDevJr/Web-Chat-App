@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
 function SingInComp() {
+    console.log('Sign IN--------------->', `${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/signin`)
     const router = useRouter();
     const [form] = Form.useForm();
     const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ function SingInComp() {
     const userAuthApi = async (reqBody: any) => {
         try {
             setIsLoading(true);
-            const userAuth = await fetch(`${process.env.ORIGIN}/user/signin`, {
+            const userAuth = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/signin`, {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {

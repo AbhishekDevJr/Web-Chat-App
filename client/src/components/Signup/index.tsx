@@ -15,7 +15,7 @@ function SignUpComp() {
     const userSubmitAPI = async (reqBody: any) => {
         try {
             setIsLoading(true);
-            const userSubmit = await fetch(`${process.env.ORIGIN}/user/signup`, {
+            const userSubmit = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/signup`, {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {
