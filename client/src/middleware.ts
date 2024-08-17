@@ -8,7 +8,7 @@ export default function middleware(req: any) {
     const isProtectedRoute = protectedRoutes.some((item) => url.includes(item));
     const isPublicRoute = authRoutes.some((item) => url.includes(item));
 
-    if (!verify && isProtectedRoute) return NextResponse.redirect('https://exclusive-messenger.up.railway.app/');
+    if (!verify && isProtectedRoute) return NextResponse.redirect(`https://web-chat-app-2ksf.onrender.com/`);
 
-    if (verify && isPublicRoute) return NextResponse.redirect('https://exclusive-messenger.up.railway.app/userdashboard');
+    if (verify && isPublicRoute) return NextResponse.redirect(`https://web-chat-app-2ksf.onrender.com/userdashboard`);
 }
