@@ -1,6 +1,6 @@
 <h1>Exclusive Messenger(NextJS-ExpressJS) Project</h1>
 
-<h1><a href = "https://exclusive-messenger.up.railway.app/">Live Demo</a></h1>
+<h1><a href = "https://exclusive-messenger.up.onrender.com/">Live Demo</a></h1>
 
 <p>Exclusive Messenger is a Full-Stack Real-Time Web Chat Application built using NextJS-ExpressJS Stack.</p>
 
