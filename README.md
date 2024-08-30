@@ -2,7 +2,7 @@
 
 <h1><a href = "https://web-chat-app-2ksf.onrender.com/">Live Demo</a></h1>
 
-<p>Exclusive Messenger is a Full-Stack Real-Time Web Chat Application built using NextJS-ExpressJS Stack.</p>
+<p>Exclusive Messenger is a Full-Stack Real-Time Web Chat Application built using NextJS-ExpressJS Stack</p>
 
 <h2>List of Technologies, Frameworks & Libraries used.</h2>
 <ul>
