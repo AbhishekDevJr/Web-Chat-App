@@ -8,7 +8,7 @@ export default function middleware(req: any) {
     const isProtectedRoute = protectedRoutes.some((item) => url.includes(item));
     const isPublicRoute = authRoutes.some((item) => url.includes(item));
 
-    if (!verify && isProtectedRoute) return NextResponse.redirect(`https://web-chat-app-2ksf.onrender.com/`);
+    if (!verify && isProtectedRoute) return NextResponse.redirect(`https://exclusivemessengerclient.vercel.app/`);
 
-    if (verify && isPublicRoute) return NextResponse.redirect(`https://web-chat-app-2ksf.onrender.com/userdashboard`);
+    if (verify && isPublicRoute) return NextResponse.redirect(`https://exclusivemessengerclient.vercel.app/userdashboard`);
 }
