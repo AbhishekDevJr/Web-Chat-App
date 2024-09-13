@@ -4,16 +4,15 @@ const asyncHandler = require('express-async-handler');
 exports.auth = asyncHandler(async (req, res, next) => {
     try {
         const token = req?.cookies?.token;
+        console.log('Server Auth----------------->', token);
 
         if (!token) {
             res.clearCookie('token', {
-                
                 path: '/',
                 sameSite: 'none',
                 secure: true
             });
             res.clearCookie('userinfo', {
-                
                 path: '/',
                 sameSite: 'none',
                 secure: true
@@ -24,13 +23,11 @@ exports.auth = asyncHandler(async (req, res, next) => {
         const verified = jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if (err) {
                 res.clearCookie('token', {
-                    
                     path: '/',
                     sameSite: 'none',
                     secure: true
                 });
                 res.clearCookie('userinfo', {
-                    
                     path: '/',
                     sameSite: 'none',
                     secure: true
@@ -40,14 +37,14 @@ exports.auth = asyncHandler(async (req, res, next) => {
         });
         next();
     } catch (err) {
+        console.log('Server Auth Error----------------->');
+
         res.clearCookie('token', {
-            
             path: '/',
             sameSite: 'none',
             secure: true
         });
         res.clearCookie('userinfo', {
-            
             path: '/',
             sameSite: 'none',
             secure: true

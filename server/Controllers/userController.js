@@ -71,7 +71,6 @@ exports.signin = asyncHandler(async (req, res, next) => {
                     const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
                     res.cookie('userinfo', userinfo, {
-                        
                         path: '/',
                         sameSite: 'none',
                         httpOnly: false,
@@ -80,8 +79,6 @@ exports.signin = asyncHandler(async (req, res, next) => {
                     });
 
                     res.status(200).cookie('token', token, {
-                        // maxAge: 3600000,
-                        
                         path: '/',
                         sameSite: 'none',
                         httpOnly: true,
@@ -128,14 +125,11 @@ exports.signout = asyncHandler(async (req, res, next) => {
 
         if (jwtToken) {
             res.clearCookie('token', {
-                // maxAge: 3600000,
-                
                 path: '/',
                 sameSite: 'none',
                 secure: true,
             });
             res.clearCookie('userinfo', {
-                
                 path: '/',
                 sameSite: 'none',
                 secure: true,
