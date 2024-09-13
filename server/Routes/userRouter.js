@@ -11,16 +11,16 @@ router.post('/signup', userController.signup);
 
 router.post('/signin', userController.signin);
 
-router.post('/signout',  userController.signout);
+router.post('/signout', auth, userController.signout);
 
-router.post('/search',  userController.search);
+router.post('/search', auth, userController.search);
 
-router.post('/requests',  userController.requests);
+router.post('/requests', auth, userController.requests);
 
-router.get('/notifications',  userController.notifications);
+router.get('/notifications', auth, userController.notifications);
 
-router.post('/requests/accept',  userController.accept);
+router.post('/requests/accept', auth, userController.accept);
 
-router.post('/requests/reject',  userController.reject);
+router.post('/requests/reject', auth, userController.reject);
 
 module.exports = router;

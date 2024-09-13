@@ -8,11 +8,13 @@ exports.auth = asyncHandler(async (req, res, next) => {
 
         if (!token) {
             res.clearCookie('token', {
+                domain: '.vercel.app',
                 path: '/',
                 sameSite: 'none',
                 secure: true
             });
             res.clearCookie('userinfo', {
+                domain: '.vercel.app',
                 path: '/',
                 sameSite: 'none',
                 secure: true
@@ -23,11 +25,13 @@ exports.auth = asyncHandler(async (req, res, next) => {
         const verified = jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if (err) {
                 res.clearCookie('token', {
+                    domain: '.vercel.app',
                     path: '/',
                     sameSite: 'none',
                     secure: true
                 });
                 res.clearCookie('userinfo', {
+                    domain: '.vercel.app',
                     path: '/',
                     sameSite: 'none',
                     secure: true
@@ -40,11 +44,13 @@ exports.auth = asyncHandler(async (req, res, next) => {
         console.log('Server Auth Error----------------->');
 
         res.clearCookie('token', {
+            domain: '.vercel.app',
             path: '/',
             sameSite: 'none',
             secure: true
         });
         res.clearCookie('userinfo', {
+            domain: '.vercel.app',
             path: '/',
             sameSite: 'none',
             secure: true

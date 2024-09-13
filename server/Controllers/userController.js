@@ -72,17 +72,19 @@ exports.signin = asyncHandler(async (req, res, next) => {
 
                     res.cookie('userinfo', userinfo, {
                         path: '/',
+                        domain: '.vercel.app',
                         sameSite: 'none',
-                        httpOnly: false,
                         secure: true,
+                        httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000
                     });
 
                     res.status(200).cookie('token', token, {
                         path: '/',
+                        domain: '.vercel.app',
                         sameSite: 'none',
-                        httpOnly: true,
                         secure: true,
+                        httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000
                     }).json({
                         title: 'Authentication Successful',
