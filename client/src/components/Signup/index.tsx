@@ -15,7 +15,7 @@ function SignUpComp() {
     const userSubmitAPI = async (reqBody: any) => {
         try {
             setIsLoading(true);
-            const userSubmit = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/signup`, {
+            const userSubmit = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/authentication/signup`, {
                 method: 'POST',
                 body: JSON.stringify(reqBody),
                 headers: {
@@ -131,7 +131,7 @@ function SignUpComp() {
                             <div className='group-input-names'>
                                 <Form.Item
                                     label="First Name"
-                                    name="firstName"
+                                    name="first_name"
                                     rules={[
                                         {
                                             required: true,
@@ -139,14 +139,14 @@ function SignUpComp() {
                                             pattern: /^[A-Za-z]+$/
                                         },
                                     ]}
-                                    key='firstname'
+                                    key='first_name'
                                 >
                                     <Input />
                                 </Form.Item>
 
                                 <Form.Item
                                     label="Last Name"
-                                    name="lastName"
+                                    name="last_name"
                                     rules={[
                                         {
                                             required: true,
@@ -154,7 +154,7 @@ function SignUpComp() {
                                             pattern: /^[A-Za-z]+$/
                                         },
                                     ]}
-                                    key='lastName'
+                                    key='last_name'
                                 >
                                     <Input />
                                 </Form.Item>
@@ -162,7 +162,7 @@ function SignUpComp() {
 
                             <div className='group-input-email'>
                                 <Form.Item
-                                    label="Emai"
+                                    label="Email"
                                     name="email"
                                     rules={[
                                         {
@@ -172,6 +172,23 @@ function SignUpComp() {
                                         },
                                     ]}
                                     key='email'
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </div>
+
+                            <div className='group-input-email'>
+                                <Form.Item
+                                    label="Username"
+                                    name="username"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input a valid Username Id!',
+                                            pattern: /^[A-Za-z]+$/
+                                        },
+                                    ]}
+                                    key='username'
                                 >
                                     <Input />
                                 </Form.Item>
