@@ -130,7 +130,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const addFriendApi = async (username: String) => {
         try {
             setFriendModalLoading(true);
-            const addFriendRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/requests`, {
+            const addFriendRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/add-friend`, {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -222,8 +222,8 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     return (
 
         <>
+            {console.log('userFriendList--------------->', userFriendList)}
             <div className='container-sidebar outline outline-[#E5E1DA] outline-[1px] p-[10px] min-w-[300px]'>
-
                 <div className='chat-type-toggle flex items-center gap-[5px] justify-center mb-[10px]'>
                     <div className='custom-toggle px-[2px] py-[4px] bg-[#f0f0f1] rounded-[5px] flex items-center gap-[5px]'>
                         <span className={`${chatSelection === 'chat' ? 'bg-[#fff] rounded-[5px] text-[#090D22] shadow-lg' : 'text-[#75737E]'} text-[14px] font-[600] px-[10px] py-[5px] cursor-pointer`} onClick={() => setChatSelection('chat')}>Chats</span>

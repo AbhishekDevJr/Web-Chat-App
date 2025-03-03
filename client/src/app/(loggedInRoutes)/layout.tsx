@@ -38,7 +38,7 @@ export default function LoggedInLayout({
     );
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && localStorage.getItem('friendList') !== 'undefined') {
             setUserFriendList(JSON.parse(localStorage.getItem('friendList') || "[]"));
         }
     }, []);
@@ -46,7 +46,7 @@ export default function LoggedInLayout({
     const signOutApi = async () => {
         try {
             setExitLoading(true);
-            const logOut = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/signout`, {
+            const logOut = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/authentication/logout`, {
                 method: 'POST',
                 // body: JSON.stringify(reqBody),
                 headers: {
@@ -119,7 +119,7 @@ export default function LoggedInLayout({
     const acceptFriendReqApi = async (username: String) => {
         try {
             setNotiLoading(true);
-            const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/requests/accept`, {
+            const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/accept-friend-req`, {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
                 headers: {
@@ -193,7 +193,7 @@ export default function LoggedInLayout({
     const rejectFriendReqApi = async (username: String) => {
         try {
             setNotiLoading(true);
-            const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/requests/reject`, {
+            const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/accept-friend-req`, {
                 method: 'POST',
                 body: JSON.stringify({ sender: username }),
                 headers: {
@@ -270,22 +270,10 @@ export default function LoggedInLayout({
         rejectFriendReqApi(item?.email);
     }
 
-    const cookieCheckerApi = async () => {
-        const cookieCheck = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/`, {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-            credentials: 'include',
-        });
-
-        const cookieCheckParse = cookieCheck.json();
-    }
-
     const getNotificationDataApi = async () => {
         try {
             setNotiLoading(true);
-            const notificationData = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/notifications`, {
+            const notificationData = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/get-friend-requests`, {
                 method: 'GET',
                 // body: JSON.stringify({ username }),
                 headers: {
@@ -361,7 +349,6 @@ export default function LoggedInLayout({
     }
 
     useLayoutEffect(() => {
-        cookieCheckerApi();
         getCurrentUserInfo();
     }, []);
 
