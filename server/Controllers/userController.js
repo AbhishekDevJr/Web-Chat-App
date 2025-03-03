@@ -71,21 +71,20 @@ exports.signin = asyncHandler(async (req, res, next) => {
                     const friendList = await UserModel.find({ _id: { $in: userExists?.friendList } }).select('firstName lastName email');
 
                     res.cookie('userinfo', userinfo, {
-                        domain: 'onrender.com',
                         path: '/',
+                        domain: '.vercel.app',
                         sameSite: 'none',
-                        httpOnly: false,
                         secure: true,
+                        httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000
                     });
 
                     res.status(200).cookie('token', token, {
-                        // maxAge: 3600000,
-                        domain: 'onrender.com',
                         path: '/',
+                        domain: '.vercel.app',
                         sameSite: 'none',
-                        httpOnly: true,
                         secure: true,
+                        httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000
                     }).json({
                         title: 'Authentication Successful',
@@ -128,14 +127,11 @@ exports.signout = asyncHandler(async (req, res, next) => {
 
         if (jwtToken) {
             res.clearCookie('token', {
-                // maxAge: 3600000,
-                domain: 'onrender.com',
                 path: '/',
                 sameSite: 'none',
                 secure: true,
             });
             res.clearCookie('userinfo', {
-                domain: 'onrender.com',
                 path: '/',
                 sameSite: 'none',
                 secure: true,
