@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler');
 exports.auth = asyncHandler(async (req, res, next) => {
     try {
         const token = req?.cookies?.token;
-        console.log('Server Auth----------------->', token);
 
         if (!token) {
             res.clearCookie('token', {
@@ -41,8 +40,6 @@ exports.auth = asyncHandler(async (req, res, next) => {
         });
         next();
     } catch (err) {
-        console.log('Server Auth Error----------------->');
-
         res.clearCookie('token', {
             domain: '.vercel.app',
             path: '/',

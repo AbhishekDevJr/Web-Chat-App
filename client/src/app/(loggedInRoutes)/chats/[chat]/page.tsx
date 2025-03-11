@@ -69,8 +69,8 @@ export default function ChatUser({ params }: { params: any }) {
 
         if (userinfo) {
             try {
-                const decoded = jwtDecode(userinfo);
-                setCurrUserData(decoded);
+                // const decoded = jwtDecode(userinfo);
+                setCurrUserData(userinfo);
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
             }

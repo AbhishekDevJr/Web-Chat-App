@@ -87,7 +87,7 @@ function HeaderComp(
                 </Popover>
 
                 <Popover content={profileContent} title="" trigger="click">
-                    <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{currUserData?.firstName && capitalize(currUserData?.firstName[0])}</span>
+                    <span className='min-w-[40px] min-h-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{currUserData?.first_name && capitalize(currUserData?.first_name[0])}</span>
                 </Popover>
             </div>
         </header>

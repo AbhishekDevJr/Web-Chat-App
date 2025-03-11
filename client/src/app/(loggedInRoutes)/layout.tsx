@@ -4,9 +4,6 @@ import { addSvg, notificationSvg, searchSvg } from "@/helpers/constants";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { capitalize } from 'lodash';
-import { jwtDecode } from 'jwt-decode'; // For JWT parsing
-import Cookies from 'js-cookie';
-
 import LoginHeader from "../../components/LoginHeader/LoginHeader";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar/Sidebar";
@@ -29,7 +26,7 @@ export default function LoggedInLayout({
 
     const profileContent = (
         <div className="flex flex-col gap-[10px] min-w-[200px]">
-            <p className="text-[18px] font-[600]">{`${capitalize(currUserData.firstName)} ${capitalize(currUserData.lastName)}`}</p>
+            <p className="text-[18px] font-[600]">{`${capitalize(currUserData.first_name)} ${capitalize(currUserData.last_name)}`}</p>
             <p className="text-[16px] font-[600]">{`${currUserData.username}`}</p>
             <button onClick={() => signOutApi()} type="submit" className='text-[#F5F5F5] font-[600] px-[25px] py-[10px] rounded-[5px] bg-[#18181B]'>
                 SIGN OUT
@@ -69,6 +66,7 @@ export default function LoggedInLayout({
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                localStorage.removeItem('userinfo');
                 setExitLoading(false);
                 setTimeout(() => router.push('/signin'), 1000);
             }
@@ -121,7 +119,7 @@ export default function LoggedInLayout({
             setNotiLoading(true);
             const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/accept-friend-req`, {
                 method: 'POST',
-                body: JSON.stringify({ sender: username }),
+                body: JSON.stringify({ username: username, request_action: 'accept' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
@@ -195,7 +193,7 @@ export default function LoggedInLayout({
             setNotiLoading(true);
             const friendReqAcceptRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/friends/accept-friend-req`, {
                 method: 'POST',
-                body: JSON.stringify({ sender: username }),
+                body: JSON.stringify({ username: username, request_action: 'reject' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
@@ -263,11 +261,11 @@ export default function LoggedInLayout({
     }
 
     const handleAcceptFriendReq = (item: any) => {
-        acceptFriendReqApi(item?.email);
+        acceptFriendReqApi(item?.username);
     }
 
     const handleRejectFriendReq = (item: any) => {
-        rejectFriendReqApi(item?.email);
+        rejectFriendReqApi(item?.username);
     }
 
     const getNotificationDataApi = async () => {
@@ -332,12 +330,11 @@ export default function LoggedInLayout({
     }
 
     const getCurrentUserInfo = () => {
-        const userinfo = Cookies.get('userinfo');
+        const userinfo = localStorage.getItem('userinfo');
 
         if (userinfo) {
             try {
-                const decoded = jwtDecode(userinfo);
-                setCurrUserData(decoded);
+                setCurrUserData(JSON.parse(userinfo));
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
             }

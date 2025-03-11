@@ -40,7 +40,8 @@ function SingInComp() {
                 form.resetFields();
                 setIsLoading(false);
                 localStorage.setItem('friendList', JSON.stringify(userAuthParsed?.friendList));
-                setTimeout(() => router.push('/userdashboard'), 2000);
+                localStorage.setItem('userinfo', JSON.stringify(userAuthParsed?.currentUser));
+                setTimeout(() => router.push('/userdashboard'), 1000);
             }
             else {
                 toast.error(`${userAuthParsed?.msg}`, {

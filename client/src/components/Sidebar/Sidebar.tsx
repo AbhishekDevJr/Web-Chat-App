@@ -57,7 +57,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const searchFriendApi = async (username: String) => {
         try {
             setFriendModalLoading(true);
-            const searchFrndRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/user/search`, {
+            const searchFrndRes = await fetch(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}/authentication/user-search`, {
                 method: 'POST',
                 body: JSON.stringify({ username }),
                 headers: {
@@ -80,7 +80,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     theme: "dark",
                 });
                 setFriendModalLoading(false);
-                setAddFriendResult(searchFrndResJson);
+                setAddFriendResult(searchFrndResJson.user_data);
             }
             else if (['Unathorized Access', 'Invalid JWT Token'].includes(searchFrndResJson?.title)) {
                 toast.error(`${searchFrndResJson?.msg}`, {
@@ -94,6 +94,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                localStorage.removeItem('userinfo');
                 setFriendModalLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
@@ -166,6 +167,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                     theme: "dark",
                 });
                 localStorage.removeItem('friendList');
+                localStorage.removeItem('userinfo');
                 setFriendModalLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
@@ -222,7 +224,6 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     return (
 
         <>
-            {console.log('userFriendList--------------->', userFriendList)}
             <div className='container-sidebar outline outline-[#E5E1DA] outline-[1px] p-[10px] min-w-[300px]'>
                 <div className='chat-type-toggle flex items-center gap-[5px] justify-center mb-[10px]'>
                     <div className='custom-toggle px-[2px] py-[4px] bg-[#f0f0f1] rounded-[5px] flex items-center gap-[5px]'>
@@ -233,7 +234,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
 
                 <div className="friend-add">
                     <ul className='flex justify-start gap-[5px]'>
-                        {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) => <li className={`min-w-[40px] max-h-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{capitalize(item.firstName[0])}</li>)}
+                        {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) => <li className={`min-w-[40px] max-h-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`} key={index}>{capitalize(item.first_name[0])}</li>)}
 
                         <li onClick={() => setIsAddFriend(true)} className={`min-w-[40px] min-h-[40px] max-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer outline outline-[#6366F1] outline-[1px] hover:outline-[3px]`}>{addSvg}</li>
                         {[0, 1].includes(userFriendList.length) && <li className='flex justify-center items-center'>
@@ -252,10 +253,10 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                         {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
                             <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
                                 <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px] pb-[10px] pt-[10px]">
-                                    <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.firstName[0])}</span>
+                                    <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.first_name[0])}</span>
 
                                     <div className='flex flex-col gap-[5px] justify-center mr-[auto] ml-[10px]'>
-                                        <p className='text-[14px] font-[600]'>{`${capitalize(item.firstName)} ${capitalize(item.lastName)}`}</p>
+                                        <p className='text-[14px] font-[600]'>{`${capitalize(item.first_name)} ${capitalize(item.last_name)}`}</p>
                                         <p className='text-[14px] font-[500]'>{`Tap here to Chat!`}</p>
                                     </div>
 
@@ -286,8 +287,8 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                             <div className=''>
                                 {addFriendResult ?
                                     <div className='flex justify-start gap-[15px] items-center mt-[20px]'>
-                                        <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstName[0].toUpperCase()}{addFriendResult.lastName[0].toUpperCase()}</span>
-                                        <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstName)} {capitalize(addFriendResult.lastName)}</span></span>
+                                        <span className='min-w-[40px] min-h-[40px] max-w-[40px] bg-[#6366F1] rounded-[100px] flex items-center justify-center text-[#F5F7F9] cursor-pointer'>{addFriendResult.firstname[0].toUpperCase()}{addFriendResult.lastname[0].toUpperCase()}</span>
+                                        <span className="text-[16px]"><span className="font-[500] text-[20px]">{capitalize(addFriendResult.firstname)} {capitalize(addFriendResult.lastname)}</span></span>
                                         <button onClick={() => addFriendRequest(addFriendResult?.username)} type="submit" className='text-[#6366F1] text-[16px] font-[500] px-[20px] py-[10px] rounded-[5px] outline outline-[2px] outline-[#6366F1] hover:bg-[#6366F1] hover:text-[#F5F7F9] ml-[auto] duration-300 hover:duration-300'>
                                             ADD FRIEND
                                         </button>

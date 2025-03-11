@@ -114,4 +114,4 @@ export const fakeChat = [
 ];
 
 export const protectedRoutes = ['/userdashboard', '/chats'];
-export const authRoutes = ['/signin', '/signup']; 
+export const authRoutes = ['/signin', '/signup'];

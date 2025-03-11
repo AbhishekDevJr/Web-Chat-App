@@ -355,7 +355,6 @@ exports.accept = asyncHandler(async (req, res, next) => {
         }
 
     } catch (err) {
-        console.log('Err-------------->', err);
         res.status(500).json({
             title: `Unhandled Exception`,
             msg: `Unhandled Server Error.`
