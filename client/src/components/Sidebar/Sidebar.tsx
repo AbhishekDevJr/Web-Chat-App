@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 import Lottie from 'react-lottie';
 import leftArrow from '../../Lottie/leftArrow.json';
+import Cookies from 'js-cookie';
 
 
 function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFriendList: any, bgColors: any, addSvg: any, currUserData: any }) {
@@ -27,6 +28,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     };
 
     const checkSelectedUser = () => {
+        console.log('Selected USER Called--------->', currUserData, userFriendList);
         const [id1, id2] = window.location.pathname.includes('_') ?
             (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_')
             :
@@ -62,6 +64,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -99,16 +102,31 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${searchFrndResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (searchFrndResJson?.msg) === "object")) {
+                    toast.success(`${searchFrndResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(searchFrndResJson?.msg).reduce(((prev, curr) => prev + searchFrndResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setFriendModalLoading(false);
                 setAddFriendResult(null);
             }
@@ -136,6 +154,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -172,16 +191,31 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${addFriendResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (addFriendResJson?.msg) === "object")) {
+                    toast.success(`${addFriendResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(addFriendResJson?.msg).reduce(((prev, curr) => prev + addFriendResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setFriendModalLoading(false);
             }
         }
@@ -209,7 +243,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     }
 
     useLayoutEffect(() => {
-        setSelectedUser(checkSelectedUser());
+        // setSelectedUser(checkSelectedUser());
     }, []);
 
     const defaultOptions = {

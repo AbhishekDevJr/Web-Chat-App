@@ -6,6 +6,7 @@ import './signup.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 function SignUpComp() {
     const router = useRouter();
@@ -20,6 +21,7 @@ function SignUpComp() {
                 body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 }
             });
 
@@ -43,16 +45,31 @@ function SignUpComp() {
                 }, 2000);
             }
             else {
-                toast.success(`${userSubmitParsed?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof(userSubmitParsed?.msg) === "object")) {
+                    toast.success(`${userSubmitParsed?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(userSubmitParsed?.msg).reduce(((prev, curr) => prev + userSubmitParsed?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setIsLoading(false);
             }
 

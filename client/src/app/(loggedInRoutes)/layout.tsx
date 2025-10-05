@@ -8,6 +8,7 @@ import LoginHeader from "../../components/LoginHeader/LoginHeader";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { Spin } from "antd";
+import Cookies from 'js-cookie';
 
 export default function LoggedInLayout({
     children
@@ -23,6 +24,7 @@ export default function LoggedInLayout({
     const [userFriendList, setUserFriendList] = useState(JSON.parse("[]"));
     const [notiLoading, setNotiLoading] = useState(false);
     const [exitLoading, setExitLoading] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const profileContent = (
         <div className="flex flex-col gap-[10px] min-w-[200px]">
@@ -48,6 +50,7 @@ export default function LoggedInLayout({
                 // body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -86,16 +89,31 @@ export default function LoggedInLayout({
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${logOutParsed?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (logOutParsed?.msg) === "object")) {
+                    toast.success(`${logOutParsed?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(logOutParsed?.msg).reduce(((prev, curr) => prev + logOutParsed?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setExitLoading(false);
             }
 
@@ -122,6 +140,7 @@ export default function LoggedInLayout({
                 body: JSON.stringify({ username: username, request_action: 'accept' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -160,16 +179,31 @@ export default function LoggedInLayout({
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${friendReqAcceptResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (friendReqAcceptResJson?.msg) === "object")) {
+                    toast.success(`${friendReqAcceptResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(friendReqAcceptResJson?.msg).reduce(((prev, curr) => prev + friendReqAcceptResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setNotiLoading(false);
             }
 
@@ -196,6 +230,7 @@ export default function LoggedInLayout({
                 body: JSON.stringify({ username: username, request_action: 'reject' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -232,16 +267,31 @@ export default function LoggedInLayout({
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${friendReqAcceptResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (friendReqAcceptResJson?.msg) === "object")) {
+                    toast.success(`${friendReqAcceptResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(friendReqAcceptResJson?.msg).reduce(((prev, curr) => prev + friendReqAcceptResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setNotiLoading(false);
             }
 
@@ -276,6 +326,7 @@ export default function LoggedInLayout({
                 // body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -301,16 +352,31 @@ export default function LoggedInLayout({
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${notificationDataJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (notificationDataJson?.msg) === "object")) {
+                    toast.success(`${notificationDataJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(notificationDataJson?.msg).reduce(((prev, curr) => prev + notificationDataJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setNotiLoading(false);
             }
 
@@ -336,7 +402,7 @@ export default function LoggedInLayout({
             try {
                 setCurrUserData(JSON.parse(userinfo));
             } catch (err) {
-                console.error('Error Decoding JWT Token------->', err);
+                console.error('Error Parsing User JSON Data------->', err);
             }
         }
     }
@@ -346,8 +412,25 @@ export default function LoggedInLayout({
     }
 
     useLayoutEffect(() => {
+        const token = Cookies.get("auth_token");
+        if (!token) {
+            router.push('/signin');
+            return;
+        }
+        else {
+            setIsAuthenticated(true);
+        }
+
         getCurrentUserInfo();
     }, []);
+
+    if (!isAuthenticated) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Spin size="large" tip="Checking authentication..." />
+            </div>
+        );
+    }
 
     return (
         <>
