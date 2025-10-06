@@ -28,32 +28,33 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     };
 
     const checkSelectedUser = () => {
-        console.log('Selected USER Called--------->', currUserData, userFriendList);
-        const [id1, id2] = window.location.pathname.includes('_') ?
-            (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_')
+        const pathname = window.location.pathname;
+        const [id1, id2] = pathname.includes('_') ?
+            (pathname.slice(pathname.lastIndexOf('/') + 1)).split('_').map(i => Number(i))
             :
             [];
 
-
-        if (currUserData?._id === id1) {
-            return userFriendList.find((item: any) => item?._id.includes(id2));
+        if (currUserData?.userid === id1) {
+            return userFriendList.find((item: any) => item?.userid === id2);
         }
         else {
-            return userFriendList.find((item: any) => item?._id.includes(id1));
+            return userFriendList.find((item: any) => item?.userid === id1);
         }
     }
 
     const handleUserChatRedirect = (e: any, index: number) => {
         e.preventDefault();
-        const senderUserId = currUserData?._id;
-        const recieverUserId = userFriendList[index]?._id;
+        const senderUserId = currUserData?.userid;
+        const recieverUserId = userFriendList[index]?.userid;
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
-            setSelectedUser(userFriendList.find(((item: any) => item?._id.includes(recieverUserId))));
+            setSelectedUser(userFriendList.find(((item: any) => item?.userid === recieverUserId)));
             socket.emit('joinRoom', roomId);
             router.push(`/chats/${roomId}`);
         }
-        // setSelectedUser(checkSelectedUser());
+        else{
+            setSelectedUser(checkSelectedUser());
+        }
     }
 
     const searchFriendApi = async (username: String) => {
@@ -243,7 +244,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     }
 
     useLayoutEffect(() => {
-        // setSelectedUser(checkSelectedUser());
+        setSelectedUser(checkSelectedUser());
     }, []);
 
     const defaultOptions = {
@@ -285,7 +286,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 <div className="friend-list py-[30px]">
                     <ul className="flex flex-col">
                         {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
-                            <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
+                            <div className={selectedUser?.userid === item?.userid ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
                                 <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px] pb-[10px] pt-[10px]">
                                     <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.first_name[0])}</span>
 

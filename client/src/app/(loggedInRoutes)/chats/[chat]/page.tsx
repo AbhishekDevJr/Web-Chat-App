@@ -65,12 +65,11 @@ export default function ChatUser({ params }: { params: any }) {
     }
 
     const getCurrentUserInfo = () => {
-        const userinfo = Cookies.get('userinfo');
+        const userinfo = localStorage.getItem('userinfo') || '';
 
         if (userinfo) {
             try {
-                // const decoded = jwtDecode(userinfo);
-                setCurrUserData(userinfo);
+                setCurrUserData(JSON.parse(userinfo));
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
             }
@@ -95,7 +94,7 @@ export default function ChatUser({ params }: { params: any }) {
 
         socket.on('typing', (data) => {
             setSenderUserObj(data?.currUserData);
-            setTypingMessage(`${data?.currUserData?.firstName} is typing...`);
+            setTypingMessage(`${data?.currUserData?.first_name} is typing...`);
         });
 
         socket.on('stopTyping', (data) => {
@@ -120,11 +119,11 @@ export default function ChatUser({ params }: { params: any }) {
                     {/* {params.chat.toUpperCase()} User Chat Route */}
                     <div className='header-chat border-b-[1px] border-[#E5E1DA] flex justify-end items-center gap-[5px] py-[5px] px-[20px] flex-none'>
                         <div className=''>
-                            <p className="text-[#09090B] font-[600] text-left">{`${currUserData.firstName} ${currUserData.lastName}`}</p>
+                            <p className="text-[#09090B] font-[600] text-left">{`${currUserData.first_name} ${currUserData.last_name}`}</p>
                             <p className="text-[#09090B] text-[14px]">{`${currUserData.username}`}</p>
                         </div>
 
-                        <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUserData?.firstName[0]}</span>
+                        <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUserData?.first_name[0]}</span>
                     </div>
 
                     <div ref={chatBoxRef} className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center max-h-[85vh] justify-between overflow-y-auto relative'>
@@ -135,20 +134,20 @@ export default function ChatUser({ params }: { params: any }) {
                                     <li key={index} className={`flex items-center gap-[5px] ${item?.userMessageData?.userInfo?.username === messages[index + 1]?.userMessageData?.userInfo?.username ? 'mb-[30px]' : ''} ${item?.userMessageData?.userInfo?.username !== currUserData?.username ? 'justify-start' : 'justify-end'} ${index !== 0 ? 'mt-[-20px]' : ''}`}>
                                         {item?.userMessageData?.userInfo?.username !== currUserData?.username ?
                                             <>
-                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{item?.userMessageData?.userInfo?.firstName[0].toUpperCase()}</span>
+                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{item?.userMessageData?.userInfo?.first_name[0].toUpperCase()}</span>
                                                 <div className="text-[#09090B] font-[600]">
-                                                    <span className="text-[#09090B] text-[14px]">{item?.userMessageData?.userInfo?.firstName}</span>
+                                                    <span className="text-[#09090B] text-[14px]">{item?.userMessageData?.userInfo?.first_name}</span>
                                                     <p className="bg-[#e2e2e2] p-[15px] rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[400px]">{item?.userMessageData?.message}</p>
                                                 </div>
                                             </>
                                             :
                                             <>
                                                 <div className="text-[white] font-[600] flex flex-col justify-end">
-                                                    <span className="text-[#09090B] text-[14px] ml-[auto]">{item?.userMessageData?.userInfo?.firstName}</span>
+                                                    <span className="text-[#09090B] text-[14px] ml-[auto]">{item?.userMessageData?.userInfo?.first_name}</span>
                                                     <p className="bg-[#6366F1] p-[15px] rounded-br-[20px] rounded-bl-[20px] rounded-tl-[20px] max-w-[400px]">{item?.userMessageData?.message}</p>
                                                 </div>
 
-                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#153448] cursor-pointer">{item?.userMessageData?.userInfo?.firstName[0].toUpperCase()}</span>
+                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#153448] cursor-pointer">{item?.userMessageData?.userInfo?.first_name[0].toUpperCase()}</span>
                                             </>
                                         }
                                     </li>
