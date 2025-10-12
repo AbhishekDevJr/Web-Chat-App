@@ -15,7 +15,6 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const socket = io('https://web-chat-app-1-99cb.onrender.com/', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
@@ -49,7 +48,6 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
             setSelectedUser(userFriendList.find(((item: any) => item?.userid === recieverUserId)));
-            socket.emit('joinRoom', roomId);
             router.push(`/chats/${roomId}`);
         }
         else{

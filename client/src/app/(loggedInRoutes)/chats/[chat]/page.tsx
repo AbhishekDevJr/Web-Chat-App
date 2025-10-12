@@ -8,7 +8,6 @@ import { jwtDecode } from 'jwt-decode'; // For JWT parsing
 import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
 
-const socket = io(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}`, { autoConnect: true });
 
 export default function ChatUser({ params }: { params: any }) {
     // const [currUser, setCurrUser] = useState<any>({});
@@ -20,6 +19,7 @@ export default function ChatUser({ params }: { params: any }) {
     const [isTyping, setIsTyping] = useState<Boolean>(false);
     const [typingMessage, setTypingMessage] = useState('');
     const [senderUserObj, setSenderUserObj] = useState<any>({});
+    const [socket, setSocket] = useState<any>(null);
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
@@ -36,32 +36,32 @@ export default function ChatUser({ params }: { params: any }) {
 
     const handleSendMessage = () => {
         if (userMessage) {
-            socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
+            sendMessage(userMessage);
         }
         setUserMessage('');
     };
 
-    const handleTyping = () => {
-        if (!isTyping) {
-            setIsTyping(true);
-            socket.emit('typing', { roomId: params?.chat, currUserData });
-        }
+    // const handleTyping = () => {
+    //     if (!isTyping) {
+    //         setIsTyping(true);
+    //         socket.emit('typing', { roomId: params?.chat, currUserData });
+    //     }
 
-        clearTimeout(typingTimeout);
+    //     clearTimeout(typingTimeout);
 
-        typingTimeout = setTimeout(() => {
-            setIsTyping(false);
-            socket.emit('stopTyping', { roomId: params?.chat, currUserData });
-        }, 2000);
+    //     typingTimeout = setTimeout(() => {
+    //         setIsTyping(false);
+    //         socket.emit('stopTyping', { roomId: params?.chat, currUserData });
+    //     }, 2000);
 
-        // clearTimeout(typingTimeout);
-    }
+    //     // clearTimeout(typingTimeout);
+    // }
 
     let typingTimeout: any;
 
     const handleMsgInputChange = (val: any) => {
         setUserMessage(val);
-        handleTyping();
+        // handleTyping();
     }
 
     const getCurrentUserInfo = () => {
@@ -77,7 +77,7 @@ export default function ChatUser({ params }: { params: any }) {
     }
 
     const sendUserMessage = () => {
-        handleSendMessage()
+        handleSendMessage();
     }
 
     useEffect(() => {
@@ -85,28 +85,46 @@ export default function ChatUser({ params }: { params: any }) {
     }, []);
 
     useEffect(() => {
+        const ws = new WebSocket(`ws://localhost:8000/ws/chat/${params?.chat}`);
+        setSocket(ws);
 
-        socket.emit('joinRoom', params?.chat);
+        ws.onopen = (event) => {
+            console.log("Client Logs: WebSocket Connection is Open for communication!");
+        }
 
-        socket.on('connection', () => {
-            console.log('Connected to Socket.IO server!');
-        });
+        ws.onerror = (event) => {
+            console.log("Client Logs: WebSocket Connection Error", event);
+        }
 
-        socket.on('typing', (data) => {
-            setSenderUserObj(data?.currUserData);
-            setTypingMessage(`${data?.currUserData?.first_name} is typing...`);
-        });
+        ws.onclose = (event) => {
+            console.log("Client Logs: WebSocket Connection Closed", event);
+        }
 
-        socket.on('stopTyping', (data) => {
-            setSenderUserObj(data?.currUserData);
-            setTypingMessage('');
-        });
+        ws.onmessage = (event) => {
+            console.log('Message Received--------->', JSON.parse(event.data));
+            const data = JSON.parse(event.data);
 
-        socket.on('receiveMessage', (messageData: any) => {
-            setMessages((prevMessages: any) => [...prevMessages, messageData]);
-        });
+            if (data?.Success) {
+                console.log('Client Logs: WebSocket Message Connection Established');
+            }
+            else {
+                setMessages((prevMessages: any) => [...prevMessages, data?.message]);
+            }
+        }
 
-    }, []);
+        return () => {
+            if (ws) {
+                ws.onmessage = null;
+            }
+        }
+
+    }, [params?.chat]);
+
+    const sendMessage = (msg: String) => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ message: msg, sender: currUserData }));
+        }
+    }
 
     useEffect(() => {
         scrollToBottom();
