@@ -191,10 +191,10 @@ export default function ChatUser({ params }: { params: any }) {
                             </>
                         }
 
-                        {isTyping && senderUserObj?.userid !== currUserData?.userid && <p className="absolute bottom-[100px]">{`${`${senderUserObj?.first_name} is typing...`}`}</p>}
+                        {isTyping && senderUserObj?.userid !== currUserData?.userid && <p className="typing-dots absolute bottom-[100px] text-gray-500 italic text-m">{`${`${senderUserObj?.first_name} is typing...`}`}</p>}
 
                         <div className="flex items-center min-w-[50%] fixed bottom-[20px]">
-                            <Input value={userMessage} className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => handleMsgInputChange(e.target.value)} onPressEnter={sendUserMessage} />
+                            <Input value={userMessage} className='py-[10px] px-[20px] pr-[40px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => handleMsgInputChange(e.target.value)} onPressEnter={sendUserMessage} />
                             <span onClick={() => sendUserMessage()} className="ml-[-40px] z-[10] cursor-pointer">
                                 {sendSvg}
                             </span>
