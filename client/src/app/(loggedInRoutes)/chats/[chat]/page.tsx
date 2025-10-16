@@ -8,7 +8,6 @@ import { jwtDecode } from 'jwt-decode'; // For JWT parsing
 import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
 
-const socket = io(`${process.env.NEXT_PUBLIC_BACK_PROD_URL}`, { autoConnect: true });
 
 export default function ChatUser({ params }: { params: any }) {
     // const [currUser, setCurrUser] = useState<any>({});
@@ -20,6 +19,7 @@ export default function ChatUser({ params }: { params: any }) {
     const [isTyping, setIsTyping] = useState<Boolean>(false);
     const [typingMessage, setTypingMessage] = useState('');
     const [senderUserObj, setSenderUserObj] = useState<any>({});
+    const [socket, setSocket] = useState<any>(null);
 
 
     const generateRoomId = (userId1: any, userId2: any) => {
@@ -36,25 +36,25 @@ export default function ChatUser({ params }: { params: any }) {
 
     const handleSendMessage = () => {
         if (userMessage) {
-            socket.emit('sendMessage', { userMessageData: { message: userMessage, userInfo: currUserData }, roomId: params?.chat });
+            sendMessage(userMessage);
         }
         setUserMessage('');
     };
 
     const handleTyping = () => {
+        const message_payload = {
+            message_type: 'user_type_start',
+            message: 'Temp',
+            sender: currUserData
+        }
         if (!isTyping) {
-            setIsTyping(true);
-            socket.emit('typing', { roomId: params?.chat, currUserData });
+            socket.send(JSON.stringify(message_payload));
         }
 
-        clearTimeout(typingTimeout);
-
         typingTimeout = setTimeout(() => {
-            setIsTyping(false);
-            socket.emit('stopTyping', { roomId: params?.chat, currUserData });
+            message_payload.message_type = `user_type_stop`
+            socket.send(JSON.stringify(message_payload));
         }, 2000);
-
-        // clearTimeout(typingTimeout);
     }
 
     let typingTimeout: any;
@@ -65,12 +65,11 @@ export default function ChatUser({ params }: { params: any }) {
     }
 
     const getCurrentUserInfo = () => {
-        const userinfo = Cookies.get('userinfo');
+        const userinfo = localStorage.getItem('userinfo') || '';
 
         if (userinfo) {
             try {
-                // const decoded = jwtDecode(userinfo);
-                setCurrUserData(userinfo);
+                setCurrUserData(JSON.parse(userinfo));
             } catch (err) {
                 console.error('Error Decoding JWT Token------->', err);
             }
@@ -78,7 +77,7 @@ export default function ChatUser({ params }: { params: any }) {
     }
 
     const sendUserMessage = () => {
-        handleSendMessage()
+        handleSendMessage();
     }
 
     useEffect(() => {
@@ -86,28 +85,57 @@ export default function ChatUser({ params }: { params: any }) {
     }, []);
 
     useEffect(() => {
+        const ws = new WebSocket(`ws://localhost:8000/ws/chat/${params?.chat}`);
+        setSocket(ws);
 
-        socket.emit('joinRoom', params?.chat);
+        ws.onopen = (event) => {
+            console.log("Client Logs: WebSocket Connection is Open for communication!");
+        }
 
-        socket.on('connection', () => {
-            console.log('Connected to Socket.IO server!');
-        });
+        ws.onerror = (event) => {
+            console.log("Client Logs: WebSocket Connection Error", event);
+        }
 
-        socket.on('typing', (data) => {
-            setSenderUserObj(data?.currUserData);
-            setTypingMessage(`${data?.currUserData?.firstName} is typing...`);
-        });
+        ws.onclose = (event) => {
+            console.log("Client Logs: WebSocket Connection Closed", event);
+        }
 
-        socket.on('stopTyping', (data) => {
-            setSenderUserObj(data?.currUserData);
-            setTypingMessage('');
-        });
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setSenderUserObj(data?.receiver);
 
-        socket.on('receiveMessage', (messageData: any) => {
-            setMessages((prevMessages: any) => [...prevMessages, messageData]);
-        });
+            if (data?.Success) {
+                console.log('Client Logs: WebSocket Message Connection Established');
+            }
+            else if(data?.message_type === `user_message`) {
+                setMessages((prevMessages: any) => [...prevMessages, data]);
+            }
+            else if(data?.message_type === `user_type_start`){
+                setIsTyping(true);
+            }
+            else if(data?.message_type === `user_type_stop`){
+                setIsTyping(false);
+            }
+        }
 
-    }, []);
+        return () => {
+            if (ws) {
+                ws.onmessage = null;
+            }
+        }
+
+    }, [params?.chat]);
+
+    const sendMessage = (msg: String) => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const messagePayload = {
+                message_type : `user_message`,
+                message:msg,
+                sender: currUserData
+            }
+            socket.send(JSON.stringify(messagePayload));
+        }
+    }
 
     useEffect(() => {
         scrollToBottom();
@@ -120,11 +148,11 @@ export default function ChatUser({ params }: { params: any }) {
                     {/* {params.chat.toUpperCase()} User Chat Route */}
                     <div className='header-chat border-b-[1px] border-[#E5E1DA] flex justify-end items-center gap-[5px] py-[5px] px-[20px] flex-none'>
                         <div className=''>
-                            <p className="text-[#09090B] font-[600] text-left">{`${currUserData.firstName} ${currUserData.lastName}`}</p>
+                            <p className="text-[#09090B] font-[600] text-left">{`${currUserData.first_name} ${currUserData.last_name}`}</p>
                             <p className="text-[#09090B] text-[14px]">{`${currUserData.username}`}</p>
                         </div>
 
-                        <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUserData?.firstName[0]}</span>
+                        <span className="min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{currUserData?.first_name[0]}</span>
                     </div>
 
                     <div ref={chatBoxRef} className='body-chat flex-1 flex-grow p-[20px] flex flex-col items-center max-h-[85vh] justify-between overflow-y-auto relative'>
@@ -132,23 +160,23 @@ export default function ChatUser({ params }: { params: any }) {
                         {messages.length ?
                             <ul className="min-w-[100%]">
                                 {!isEmpty(messages) && messages.map((item: any, index: any) =>
-                                    <li key={index} className={`flex items-center gap-[5px] ${item?.userMessageData?.userInfo?.username === messages[index + 1]?.userMessageData?.userInfo?.username ? 'mb-[30px]' : ''} ${item?.userMessageData?.userInfo?.username !== currUserData?.username ? 'justify-start' : 'justify-end'} ${index !== 0 ? 'mt-[-20px]' : ''}`}>
-                                        {item?.userMessageData?.userInfo?.username !== currUserData?.username ?
+                                    <li key={index} className={`flex items-center gap-[5px] ${item?.sender?.userid === messages[index + 1]?.sender?.userid ? 'mb-[30px]' : ''} ${item?.sender?.userid !== currUserData?.userid ? 'justify-start' : 'justify-end'} ${index !== 0 ? 'mt-[-20px]' : ''}`}>
+                                        {item?.sender?.userid !== currUserData?.userid ?
                                             <>
-                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{item?.userMessageData?.userInfo?.firstName[0].toUpperCase()}</span>
+                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#09090B] cursor-pointer">{item?.sender?.first_name[0].toUpperCase()}</span>
                                                 <div className="text-[#09090B] font-[600]">
-                                                    <span className="text-[#09090B] text-[14px]">{item?.userMessageData?.userInfo?.firstName}</span>
-                                                    <p className="bg-[#e2e2e2] p-[15px] rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[400px]">{item?.userMessageData?.message}</p>
+                                                    <span className="text-[#09090B] text-[14px]">{item?.sender?.first_name}</span>
+                                                    <p className="bg-[#e2e2e2] p-[15px] rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[400px]">{item?.message}</p>
                                                 </div>
                                             </>
                                             :
                                             <>
                                                 <div className="text-[white] font-[600] flex flex-col justify-end">
-                                                    <span className="text-[#09090B] text-[14px] ml-[auto]">{item?.userMessageData?.userInfo?.firstName}</span>
-                                                    <p className="bg-[#6366F1] p-[15px] rounded-br-[20px] rounded-bl-[20px] rounded-tl-[20px] max-w-[400px]">{item?.userMessageData?.message}</p>
+                                                    <span className="text-[#09090B] text-[14px] ml-[auto]">{item?.sender?.first_name}</span>
+                                                    <p className="bg-[#6366F1] p-[15px] rounded-br-[20px] rounded-bl-[20px] rounded-tl-[20px] max-w-[400px]">{item?.message}</p>
                                                 </div>
 
-                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#153448] cursor-pointer">{item?.userMessageData?.userInfo?.firstName[0].toUpperCase()}</span>
+                                                <span className="mt-[-30px] min-w-[40px] min-h-[40px] max-w-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] bg-[#153448] cursor-pointer">{item?.sender?.first_name[0].toUpperCase()}</span>
                                             </>
                                         }
                                     </li>
@@ -163,10 +191,10 @@ export default function ChatUser({ params }: { params: any }) {
                             </>
                         }
 
-                        {typingMessage && senderUserObj?._id !== currUserData?._id && <p className="absolute bottom-[100px]">{`${typingMessage}`}</p>}
+                        {isTyping && senderUserObj?.userid !== currUserData?.userid && <p className="typing-dots absolute bottom-[100px] text-gray-500 italic text-m">{`${`${senderUserObj?.first_name} is typing...`}`}</p>}
 
                         <div className="flex items-center min-w-[50%] fixed bottom-[20px]">
-                            <Input value={userMessage} className='py-[10px] px-[20px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => handleMsgInputChange(e.target.value)} onPressEnter={sendUserMessage} />
+                            <Input value={userMessage} className='py-[10px] px-[20px] pr-[40px] min-w-[300px] rounded-[100px] bg-[#F5F7F9] hover:bg-[#F5F7F9] hover:border-[#6366F1] focus:border-[#6366F1] focus:bg-[#F5F7F9] text-[16px] hover:border-[2px] border-[2px]' type='text' placeholder="Say Something..." onChange={(e: any) => handleMsgInputChange(e.target.value)} onPressEnter={sendUserMessage} />
                             <span onClick={() => sendUserMessage()} className="ml-[-40px] z-[10] cursor-pointer">
                                 {sendSvg}
                             </span>

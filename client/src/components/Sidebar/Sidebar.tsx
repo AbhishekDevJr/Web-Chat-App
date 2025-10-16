@@ -8,13 +8,13 @@ import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 import Lottie from 'react-lottie';
 import leftArrow from '../../Lottie/leftArrow.json';
+import Cookies from 'js-cookie';
 
 
 function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFriendList: any, bgColors: any, addSvg: any, currUserData: any }) {
     const [chatSelection, setChatSelection] = useState('chat');
     const [addFriendModal, setIsAddFriend] = useState(false);
     const [addFriendString, setAddFriendString] = useState('');
-    const socket = io('https://web-chat-app-1-99cb.onrender.com/', { autoConnect: false });
     const router = useRouter();
     const [addFriendResult, setAddFriendResult] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>({});
@@ -27,31 +27,32 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
     };
 
     const checkSelectedUser = () => {
-        const [id1, id2] = window.location.pathname.includes('_') ?
-            (window.location.pathname.slice(window.location.pathname.lastIndexOf('/') + 1, window.location.pathname.length - 1)).split('_')
+        const pathname = window.location.pathname;
+        const [id1, id2] = pathname.includes('_') ?
+            (pathname.slice(pathname.lastIndexOf('/') + 1)).split('_').map(i => Number(i))
             :
             [];
 
-
-        if (currUserData?._id === id1) {
-            return userFriendList.find((item: any) => item?._id.includes(id2));
+        if (currUserData?.userid === id1) {
+            return userFriendList.find((item: any) => item?.userid === id2);
         }
         else {
-            return userFriendList.find((item: any) => item?._id.includes(id1));
+            return userFriendList.find((item: any) => item?.userid === id1);
         }
     }
 
     const handleUserChatRedirect = (e: any, index: number) => {
         e.preventDefault();
-        const senderUserId = currUserData?._id;
-        const recieverUserId = userFriendList[index]?._id;
+        const senderUserId = currUserData?.userid;
+        const recieverUserId = userFriendList[index]?.userid;
         if (senderUserId && recieverUserId) {
             const roomId = generateRoomId(senderUserId, recieverUserId);
-            setSelectedUser(userFriendList.find(((item: any) => item?._id.includes(recieverUserId))));
-            socket.emit('joinRoom', roomId);
+            setSelectedUser(userFriendList.find(((item: any) => item?.userid === recieverUserId)));
             router.push(`/chats/${roomId}`);
         }
-        // setSelectedUser(checkSelectedUser());
+        else{
+            setSelectedUser(checkSelectedUser());
+        }
     }
 
     const searchFriendApi = async (username: String) => {
@@ -62,6 +63,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -99,16 +101,31 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${searchFrndResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (searchFrndResJson?.msg) === "object")) {
+                    toast.success(`${searchFrndResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(searchFrndResJson?.msg).reduce(((prev, curr) => prev + searchFrndResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setFriendModalLoading(false);
                 setAddFriendResult(null);
             }
@@ -136,6 +153,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Token ${Cookies.get('auth_token')}`
                 },
                 credentials: 'include',
             });
@@ -172,16 +190,31 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 setTimeout(() => router.push('/signin'), 2000);
             }
             else {
-                toast.error(`${addFriendResJson?.msg}`, {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
+                if (!(typeof (addFriendResJson?.msg) === "object")) {
+                    toast.success(`${addFriendResJson?.msg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
+                else {
+                    const errorMsg = Object.keys(addFriendResJson?.msg).reduce(((prev, curr) => prev + addFriendResJson?.msg[curr]), '')
+                    toast.success(`${errorMsg}`, {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                }
                 setFriendModalLoading(false);
             }
         }
@@ -251,7 +284,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 <div className="friend-list py-[30px]">
                     <ul className="flex flex-col">
                         {!isEmpty(userFriendList) && userFriendList.map((item: any, index: any) =>
-                            <div className={selectedUser?._id === item?._id ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
+                            <div className={selectedUser?.userid === item?.userid ? 'bg-[#6365f191] rounded-lg' : 'hover:outline hover:outline-[#6365f191] outline-[2px] rounded-lg'} onClick={(e) => handleUserChatRedirect(e, index)} key={index}>
                                 <li key={index} className="flex items-center justify-between cursor-pointer border-b-[1px] border-[#E5E1DA] p-[5px] pb-[10px] pt-[10px]">
                                     <span className={`min-w-[40px] min-h-[40px] rounded-[100px] flex items-center justify-center text-[#F5F7F9] ${bgColors[index % bgColors.length]} cursor-pointer`}>{capitalize(item.first_name[0])}</span>
 
