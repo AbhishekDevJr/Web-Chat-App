@@ -82,7 +82,7 @@ export default function ChatUser({ params }: { params: any }) {
     }, []);
 
     useEffect(() => {
-        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_PROTOCOL}://${process.env.NEXT_PUBLIC_BACK_PROD_URL}/ws/chat/${params?.chat}`);
+        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_PROTOCOL}://${process.env.NEXT_PUBLIC_WS_PROD_URL}/ws/chat/${params?.chat}`);
         setSocket(ws);
 
         ws.onopen = (event) => {
