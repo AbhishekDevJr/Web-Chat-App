@@ -3,12 +3,10 @@
 import { Input, Modal, Spin } from 'antd';
 import { capitalize, isEmpty } from 'lodash';
 import React, { useLayoutEffect, useState } from 'react'
-import io from 'socket.io-client';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
 import Lottie from 'react-lottie';
 import leftArrow from '../../Lottie/leftArrow.json';
-import Cookies from 'js-cookie';
 
 
 function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFriendList: any, bgColors: any, addSvg: any, currUserData: any }) {
@@ -63,7 +61,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
@@ -153,7 +151,7 @@ function Sidebar({ userFriendList, bgColors, addSvg, currUserData }: { userFrien
                 body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });

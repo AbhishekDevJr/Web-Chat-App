@@ -6,7 +6,6 @@ import './signup.scss';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 
 function SignUpComp() {
     const router = useRouter();
@@ -21,7 +20,7 @@ function SignUpComp() {
                 body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 }
             });
 

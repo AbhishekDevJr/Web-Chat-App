@@ -2,14 +2,13 @@
 
 import Link from 'next/link'
 import React, { useLayoutEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
 function HomeComp() {
     const router = useRouter();
 
     useLayoutEffect(() => {
-        const userinfo = Cookies.get('userinfo');
+        const userinfo = localStorage.getItem('userinfo');
         if (userinfo) {
             router.push('/userdashboard');
         }

@@ -6,7 +6,6 @@ import './signin.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 
 function SingInComp() {
     const router = useRouter();
@@ -21,7 +20,7 @@ function SingInComp() {
                 body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
@@ -41,6 +40,7 @@ function SingInComp() {
                 });
                 form.resetFields();
                 setIsLoading(false);
+                localStorage.setItem('auth_token', JSON.stringify(userAuthParsed?.token));
                 localStorage.setItem('friendList', JSON.stringify(userAuthParsed?.friendList));
                 localStorage.setItem('userinfo', JSON.stringify(userAuthParsed?.currentUser));
                 setTimeout(() => router.push('/userdashboard'), 1000);

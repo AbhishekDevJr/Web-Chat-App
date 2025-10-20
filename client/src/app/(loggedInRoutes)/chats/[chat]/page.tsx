@@ -3,9 +3,6 @@
 import { sendSvg } from "@/helpers/constants";
 import { Input } from "antd";
 import { useEffect, useRef, useState } from "react";
-import io from 'socket.io-client';
-import { jwtDecode } from 'jwt-decode'; // For JWT parsing
-import Cookies from 'js-cookie';
 import { isEmpty } from "lodash";
 
 

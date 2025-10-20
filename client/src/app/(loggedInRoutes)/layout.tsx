@@ -8,7 +8,6 @@ import LoginHeader from "../../components/LoginHeader/LoginHeader";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { Spin } from "antd";
-import Cookies from 'js-cookie';
 
 export default function LoggedInLayout({
     children
@@ -50,14 +49,14 @@ export default function LoggedInLayout({
                 // body: JSON.stringify(reqBody),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
 
             const logOutParsed = await logOut.json();
 
-            if (logOutParsed?.title === 'Logged Out') {
+            if (['Logged Out', 'Auth Token does not Exists.', 'Multiple Token data found for current Token Key.'].some((str) => str === logOutParsed?.title)) {
                 toast.success(`${logOutParsed?.msg}`, {
                     position: "top-center",
                     autoClose: 3000,
@@ -68,8 +67,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
-                localStorage.removeItem('friendList');
-                localStorage.removeItem('userinfo');
+                localStorage.clear();
                 setExitLoading(false);
                 setTimeout(() => router.push('/signin'), 1000);
             }
@@ -84,7 +82,7 @@ export default function LoggedInLayout({
                     progress: undefined,
                     theme: "dark",
                 });
-                localStorage.removeItem('friendList');
+                localStorage.clear();
                 setExitLoading(false);
                 setTimeout(() => router.push('/signin'), 2000);
             }
@@ -114,7 +112,9 @@ export default function LoggedInLayout({
                         theme: "dark",
                     });
                 }
+                localStorage.clear();
                 setExitLoading(false);
+                setTimeout(() => router.push('/signin'), 1000);
             }
 
         } catch (err: any) {
@@ -140,7 +140,7 @@ export default function LoggedInLayout({
                 body: JSON.stringify({ username: username, request_action: 'accept' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
@@ -230,7 +230,7 @@ export default function LoggedInLayout({
                 body: JSON.stringify({ username: username, request_action: 'reject' }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
@@ -326,7 +326,7 @@ export default function LoggedInLayout({
                 // body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
-                    'Authorization': `Token ${Cookies.get('auth_token')}`
+                    'Authorization': `Token ${JSON.parse(localStorage.getItem("auth_token") || '{}')}`
                 },
                 credentials: 'include',
             });
@@ -412,7 +412,7 @@ export default function LoggedInLayout({
     }
 
     useLayoutEffect(() => {
-        const token = Cookies.get("auth_token");
+        const token = localStorage.getItem("auth_token");
         if (!token) {
             router.push('/signin');
             return;

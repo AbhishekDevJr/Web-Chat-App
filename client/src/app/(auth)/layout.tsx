@@ -3,7 +3,6 @@ import HeaderComp from "@/components/Header";
 import { Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
-import Cookies from 'js-cookie';
 
 export default function AuthLayout({
     children
@@ -14,7 +13,7 @@ export default function AuthLayout({
     const [isAuthChecked, setIsAuthchecked] = useState(false);
 
     useLayoutEffect(() => {
-        const token = Cookies.get('auth_token');
+        const token = localStorage.getItem('auth_token');
 
         if(token){
             router.push('/userdashboard');
