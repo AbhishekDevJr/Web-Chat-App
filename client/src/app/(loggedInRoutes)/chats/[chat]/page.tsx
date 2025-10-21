@@ -4,6 +4,8 @@ import { sendSvg } from "@/helpers/constants";
 import { Input } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { isEmpty } from "lodash";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function ChatUser({ params }: { params: any }) {
@@ -95,6 +97,16 @@ export default function ChatUser({ params }: { params: any }) {
 
         ws.onclose = (event) => {
             console.log("Client Logs: WebSocket Connection Closed", event);
+            toast.error(`Error while establishing Web-Socket Connnection.`, {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
         }
 
         ws.onmessage = (event) => {
@@ -104,13 +116,13 @@ export default function ChatUser({ params }: { params: any }) {
             if (data?.Success) {
                 console.log('Client Logs: WebSocket Message Connection Established');
             }
-            else if(data?.message_type === `user_message`) {
+            else if (data?.message_type === `user_message`) {
                 setMessages((prevMessages: any) => [...prevMessages, data]);
             }
-            else if(data?.message_type === `user_type_start`){
+            else if (data?.message_type === `user_type_start`) {
                 setIsTyping(true);
             }
-            else if(data?.message_type === `user_type_stop`){
+            else if (data?.message_type === `user_type_stop`) {
                 setIsTyping(false);
             }
         }
@@ -126,8 +138,8 @@ export default function ChatUser({ params }: { params: any }) {
     const sendMessage = (msg: String) => {
         if (socket && socket.readyState === WebSocket.OPEN) {
             const messagePayload = {
-                message_type : `user_message`,
-                message:msg,
+                message_type: `user_message`,
+                message: msg,
                 sender: currUserData
             }
             socket.send(JSON.stringify(messagePayload));
@@ -140,6 +152,20 @@ export default function ChatUser({ params }: { params: any }) {
 
     return (
         <>
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={true}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                // pauseOnHover
+                theme="dark"
+            // transition: Bounce
+            />
+
             {currUserData?.username ?
                 <div className='container-chat flex flex-col min-h-[100%]'>
                     {/* {params.chat.toUpperCase()} User Chat Route */}
